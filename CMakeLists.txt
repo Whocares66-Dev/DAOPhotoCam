@@ -104,6 +104,10 @@ add_daolib_plugin(
         src/plugin/PhotoCam.cpp
         src/plugin/GameView.cpp
         src/plugin/Eluvian.cpp
+        src/plugin/Panel.cpp
+    # The panel's movie, built outside CMake by tools/movie.py (it needs Java and FFDec), served
+    # to the game from beside the dll (dao/Gui.h). One not built yet warns and is skipped.
+    FILES build/ui/photocam.swf
 )
 target_link_libraries(photocam PRIVATE photocam_core)
 dao_apply_warnings(photocam)

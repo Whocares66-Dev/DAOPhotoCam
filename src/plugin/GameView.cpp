@@ -31,7 +31,6 @@ constexpr std::uint32_t kFlying =
 // Photo cam's key map: the flight's actions answer their keys while it is on, and the game's
 // actions on the same keys do not (dao/Input.h, DAOLib #130). The user, 2026-10-15: the keys
 // read from the device until DAOLib let them share the game's, then rebindable actions.
-constexpr std::wstring_view kKeymap = L"PhotoCam";
 constexpr std::wstring_view kForward = L"PhotoCamForward";
 constexpr std::wstring_view kBack = L"PhotoCamBack";
 constexpr std::wstring_view kLeft = L"PhotoCamLeft";
@@ -41,6 +40,9 @@ constexpr std::wstring_view kDown = L"PhotoCamDown";
 
 // The field of view last held, so it is set on a change and not every frame.
 std::optional<float> g_heldFov;
+
+// Whether photo cam holds the cursor (HoldCursor), so DAOLib is called on a change only.
+bool g_cursorHeld = false;
 
 // Whether the game was paused when photo cam paused it, while photo cam is on.
 std::optional<bool> g_pausedBefore;
@@ -151,9 +153,9 @@ bool RegisterMoves()
         dao::input::Key key;
     };
     using dao::input::Key;
-    for (const Move &move : {Move{kForward, L"Photo camera forward", Key::W}, Move{kBack, L"Photo camera back", Key::S},
-                             Move{kLeft, L"Photo camera left", Key::A}, Move{kRight, L"Photo camera right", Key::D},
-                             Move{kUp, L"Photo camera up", Key::Q}, Move{kDown, L"Photo camera down", Key::E}})
+    for (const Move &move : {Move{kForward, L"Camera forward", Key::W}, Move{kBack, L"Camera back", Key::S},
+                             Move{kLeft, L"Camera left", Key::A}, Move{kRight, L"Camera right", Key::D},
+                             Move{kUp, L"Camera up", Key::Q}, Move{kDown, L"Camera down", Key::E}})
     {
         // Held, not pressed: the callback has nothing to do, and DAOLib asks for one.
         if (!dao::input::RegisterAction(
@@ -197,10 +199,25 @@ FlyInput ReadInput(float seconds)
     return input;
 }
 
+// The user, 2026-10-15: "the mouse pointer should disappear when right clicking like in normal
+// game". DAOLib #132 holds it through the game's own path, the one its orbit uses.
+void HoldCursor(bool held)
+{
+    if (held != g_cursorHeld)
+    {
+        dao::input::HoldCursor(held);
+        g_cursorHeld = held;
+    }
+}
+
 void Withhold(bool withheld)
 {
     dao::input::Withhold(withheld ? kFlying : 0);
     dao::input::SetKeymap(kKeymap, withheld);
+    if (!withheld)
+    {
+        HoldCursor(false);
+    }
 }
 
 } // namespace photocam::game

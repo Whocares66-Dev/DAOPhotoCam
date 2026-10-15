@@ -12,6 +12,7 @@
 
 #include <cstdint>
 #include <optional>
+#include <string_view>
 
 namespace photocam::game
 {
@@ -43,6 +44,10 @@ void Freeze();
 // Gives the game back the pause Freeze found. Call after Release.
 void Thaw();
 
+// Photo cam's key map, on while it is on (Withhold): its actions in it share their keys with the
+// game's, which do not answer to them meanwhile.
+inline constexpr std::wstring_view kKeymap = L"PhotoCam";
+
 // Registers the flight's keys as actions the player rebinds under "Photo Camera": forward, back,
 // left, right, up and down, W, S, A, D, Q and E by default, in photo cam's own key map, so they share their keys
 // with the game's walking. Call from DAOLib_Load.
@@ -51,6 +56,10 @@ bool RegisterMoves();
 
 // The player's input since the last call, for the flight. Call once a frame on the game thread.
 FlyInput ReadInput(float seconds);
+
+// Hides the cursor and holds it where it is while the view is turned by the mouse, as the game's
+// own right-drag does, or shows it there again. Called on each change only.
+void HoldCursor(bool held);
 
 // Withholds the game's own reaction to the keys and mouse photo cam flies by (moving the
 // party, turning, panning and zooming its camera) and turns photo cam's key map on, or gives the
