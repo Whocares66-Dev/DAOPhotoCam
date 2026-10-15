@@ -24,3 +24,9 @@ __pycache__/
 
 # Claude Code runtime state
 /.claude/scheduled_tasks.lock
+
+# The guide's Jekyll output and gems
+docs/_site/
+docs/.jekyll-cache/
+docs/.bundle/
+docs/vendor/

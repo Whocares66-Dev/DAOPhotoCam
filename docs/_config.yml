@@ -1,0 +1,40 @@
+# The guide's site: Just the Docs, as the other DAO repositories' are (DAOTurnBased's read
+# 2026-10-15). Its pages are index.md and the pages beside it, written by hand; its pictures are
+# the game's own frames (assets/img, README.md).
+title: Photo Cam
+description: A free camera for screenshots in Dragon Age Origins, a DAOLib plugin.
+url: https://whocares66-dev.github.io
+baseurl: /DAOPhotoCam
+remote_theme: just-the-docs/just-the-docs@v0.12.0
+color_scheme: photocam
+# The gold camera of the game's top bar (tools/camera_icon.py) beside the title and as the icon.
+favicon_ico: /assets/favicon.ico
+permalink: pretty
+markdown: kramdown
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+plugins:
+  - jekyll-remote-theme
+  - jekyll-seo-tag
+  - jekyll-include-cache
+search_enabled: true
+search:
+  heading_level: 3
+  previews: 3
+  button: false
+heading_anchors: true
+back_to_top: true
+back_to_top_text: Back to top
+aux_links:
+  GitHub: https://github.com/Whocares66-Dev/DAOPhotoCam
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: default
+exclude:
+  - README.md
+  - Gemfile
+  - Gemfile.lock
+  - vendor
