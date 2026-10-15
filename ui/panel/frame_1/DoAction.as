@@ -35,11 +35,13 @@ var SLIDER = 350; // the slider's width, its arrows in
 var WIDTH = PAD + ARROW + SLIDER - ARROW + PAD + 12;
 var FOV_STEP = 5; // as a notch of the wheel moves them (src/core/FlyCamera.h)
 var SPEED_STEP = 1.25;
-var SMALL_WIDTH = 210; // the panel made small: its title and the button that brings it back
+var SMALL_WIDTH = 190; // the panel made small: its title and the button that brings it back
 var SMALL_HEIGHT = 64;
 var SQUARE = 22;
 var TITLE_MIDDLE = 13; // the title row's middle, below its top
-var EXIT_SCALE = 70;
+var BUTTON_GAP = 6; // between Capture and Exit
+var MENU_TALLER = 1.35; // the buttons' height over what their width's scale gives
+var MENU_TEXT = 15; // the buttons' letters, in pixels, as the Esc menu's look beside the panel's
 var OPEN_BOOK = 2; // SoundEvents.ST_OPEN_BOOK
 var CLOSE_BOOK = 4; // SoundEvents.ST_CLOSE_BOOK
 
@@ -76,7 +78,8 @@ function tooltipBox(clip, w, h)
     roundedBox(clip, BOX_INSET, BOX_INSET, w - 2 * BOX_INSET, h - 2 * BOX_INSET, BOX_RADIUS, 0x000000, 80);
 }
 
-// The title, its letters' middle at `middle`: a text field has 2 pixels of gutter above its line.
+// The title, centred across `w` (the user, 2026-10-15: "we can center the title, 'Photo Cam'"), its
+// letters' middle at `middle`: a text field has 2 pixels of gutter above its line.
 function title(clip, x, middle, w, text)
 {
     clip.createTextField("title", 1, x, 0, w, 26);
@@ -85,6 +88,7 @@ function title(clip, x, middle, w, text)
     format.font = "$TitleFont";
     format.size = 18;
     format.color = TITLE;
+    format.align = "center";
     field.embedFonts = true;
     field.selectable = false;
     field.setNewTextFormat(format);
@@ -138,6 +142,10 @@ function playTo(clip, last)
         {
             this.gotoAndStop(this._currentframe + (this.target > this._currentframe ? 1 : -1));
         }
+        if (this._parent.label != undefined)
+        {
+            setAllText(this._parent, this._parent.label);
+        }
     };
 }
 
@@ -157,22 +165,22 @@ function hover(clip)
 // ---------------------------------------------------------------------------------------------
 // The checkbox
 
-// One of the options screen's checkboxes, its label `text`; `onClick` asks for the change.
-function checkBox(panel, name, depth, y, text, onClick)
+function lockBox(panel, y)
 {
-    var box = panel.attachMovie("checkbox_mc", name, depth);
+    var box = panel.attachMovie("checkbox_mc", "lock", 20);
     stopAll(box);
     box._x = PAD;
     box._y = y;
-    box.Label_mc.TextField.text = text;
-    // The tick is Down_mc's second frame: it stands there and is shown or hidden, as it was while a
-    // paused movie did not go to a frame (seen 2026-10-15, before DAOLib #134).
+    box.Label_mc.TextField.text = "Lock camera";
+    // The tick is Down_mc's second frame. A paused movie does not go to a frame (seen 2026-10-15:
+    // the tick did not come while paused, a thumb's place did), so it stands on that frame from
+    // the start and is shown or hidden.
     box.Down_mc.gotoAndStop(2);
     box.Down_mc._visible = false;
     box.onRelease = function()
     {
         click();
-        onClick();
+        ask("PhotoCam_SetLocked", !state.locked);
         refresh();
     };
     return box;
@@ -308,49 +316,82 @@ function metres(v)
 // ---------------------------------------------------------------------------------------------
 // The button
 
-// The options screen's Cancel button (its export ArrowButton), the curved one at its bottom right,
-// which leaves it as Exit leaves photo cam: the user, 2026-10-15, of the plain push button first
-// used, "can we not reuse an existing options menu button instead of creating one that doesn't fit
-// the theme?"
-function exitButton(panel, y)
+// A button of the game's own menu, the one Esc opens (mainmenu.gfx's bu_escape_m: Resume Game, Save
+// Game), at a size for two side by side: the user, 2026-10-15, "how about we use these buttons",
+// after the options screen's OK and Cancel. `label` stays on it through its frames: each of its
+// looks has a text field of its own, which came back with its default text ("OK Button") as the
+// button was pressed.
+function menuButton(panel, name, depth, label, x, y, width, message)
 {
-    var button = panel.attachMovie("ArrowButton", "exit", 50);
+    var button = panel.attachMovie("bu_escape_m", name, depth);
     stopAll(button);
-    setButtonText(button, "Exit");
-    // Smaller than the options screen has it (the user: "exit button should be smaller").
-    button._xscale = button._yscale = EXIT_SCALE;
-    button._x = WIDTH - PAD + 8 - button._width;
+    button.label = label;
+    button._xscale = width / button._width * 100;
+    // A little taller than its width makes it (the user, 2026-10-15: "you can stretch the buttons a
+    // little taller").
+    button._yscale = button._xscale * MENU_TALLER;
+    button._x = x;
     button._y = y;
+    setAllText(button, label);
     hover(button);
     button.onPress = function()
     {
         this.Down_mc.gotoAndStop(2);
+        setAllText(this, this.label);
     };
     button.onRelease = function()
     {
         this.Down_mc.gotoAndStop(1);
+        setAllText(this, this.label);
         click();
-        ask("PhotoCam_Exit");
+        ask(message);
     };
     return button;
 }
 
-// The first text field anywhere in a button, its label.
-function setButtonText(clip, text)
+// Every text field in a clip and the clips in it, the letters MENU_TEXT pixels high on the screen
+// whatever the button is scaled to (the user, 2026-10-15: "capture / exit font should be bigger").
+function setAllText(clip, text)
 {
     for (var child in clip)
     {
-        if (clip[child] instanceof TextField)
+        var field = clip[child];
+        if (field instanceof TextField)
         {
-            clip[child].text = text;
-            return true;
+            var format = field.getTextFormat();
+            format.size = Math.round(MENU_TEXT * 100 / textScale(field));
+            field.setNewTextFormat(format);
+            field.text = text;
+            field.setTextFormat(format);
+            // Grown to its letters and kept about the middle it had, where the smaller letters
+            // were clipped at the bottom (seen 2026-10-15).
+            if (field.middle == undefined)
+            {
+                field.middle = field._y + field._height / 2;
+                field.centre = field._x + field._width / 2;
+            }
+            field.autoSize = "center";
+            // As wide as tall, the button being stretched taller than wide (MENU_TALLER).
+            field._xscale = MENU_TALLER * 100;
+            field._x = field.centre - field._width / 2;
+            field._y = field.middle - field._height / 2;
         }
-        if (typeof(clip[child]) == "movieclip" && clip[child]._parent == clip && setButtonText(clip[child], text))
+        else if (typeof(field) == "movieclip" && field._parent == clip)
         {
-            return true;
+            setAllText(field, text);
         }
     }
-    return false;
+}
+
+// How much a clip is scaled on the screen, in percent, by it and the clips it is in.
+function textScale(clip)
+{
+    var scale = 100;
+    for (var at = clip._parent; at != undefined && at != _root; at = at._parent)
+    {
+        scale = scale * at._yscale / 100;
+    }
+    return scale;
 }
 
 // What a clip holds, for the log while an imported control is learned.
@@ -423,7 +464,7 @@ function build()
 {
     var panel = _root.createEmptyMovieClip("panel", 10);
     var y = PAD - 2;
-    title(panel, PAD, y + TITLE_MIDDLE, WIDTH - 2 * PAD, "Photo Camera");
+    title(panel, PAD, y + TITLE_MIDDLE, WIDTH - 2 * PAD, "Photo Cam");
     // The user, 2026-10-15: "a top right button to minimize the ui, retaining only a small box w/ a
     // maximize button".
     squareButton(panel, "minimize", 60, false, WIDTH - PAD + 4, y + TITLE_MIDDLE, function()
@@ -431,23 +472,18 @@ function build()
         showSmall(true);
     });
     y += 34;
-    panel.lock = checkBox(panel, "lock", 20, y, "Lock camera", function()
-    {
-        ask("PhotoCam_SetLocked", !state.locked);
-    });
-    y += 34;
-    // The user, 2026-10-15: "a check under lock camera to toggle game ui, default off".
-    panel.ui = checkBox(panel, "ui", 21, y, "Show interface", function()
-    {
-        ask("PhotoCam_SetInterface", !state.shown);
-    });
+    panel.lock = lockBox(panel, y);
     y += 40;
     panel.fov = slider(panel, "fov", 30, y, "Field of view", fovFraction, fovOf, fovStep, degrees, "PhotoCam_SetFov");
     y += 54;
     panel.speed = slider(panel, "speed", 40, y, "Move speed", speedFraction, speedOf, speedStep, metres,
                          "PhotoCam_SetSpeed");
     y += 58;
-    var exit = exitButton(panel, y);
+    // Capture and Exit side by side, Exit at the right (the user: "add button left of exit,
+    // capture, to take screenshot").
+    var half = (WIDTH - 2 * PAD - BUTTON_GAP) / 2;
+    menuButton(panel, "capture", 51, "Capture", PAD, y, half, "PhotoCam_Capture");
+    var exit = menuButton(panel, "exit", 50, "Exit", PAD + half + BUTTON_GAP, y, half, "PhotoCam_Exit");
     y += exit._height;
     var back = panel.createEmptyMovieClip("back", 0);
     tooltipBox(back, WIDTH, y + PAD - 4);
@@ -455,7 +491,8 @@ function build()
     panel.boxWidth = WIDTH;
 
     var small = _root.createEmptyMovieClip("small", 11);
-    title(small, PAD, SMALL_HEIGHT / 2, SMALL_WIDTH - 2 * PAD, "Photo Camera");
+    // Centred in what the square leaves of the small box.
+    title(small, PAD, SMALL_HEIGHT / 2, SMALL_WIDTH - 2 * PAD - SQUARE, "Photo Cam");
     squareButton(small, "maximize", 60, true, SMALL_WIDTH - PAD + 4, SMALL_HEIGHT / 2, function()
     {
         showSmall(false);
@@ -498,10 +535,9 @@ function refresh(answer)
     }
     var f = String(answer).split(FIELD);
     state = {locked: f[0] == "1", fov: Number(f[1]), fovMin: Number(f[2]), fovMax: Number(f[3]),
-             speed: Number(f[4]), speedMin: Number(f[5]), speedMax: Number(f[6]), shown: f[7] == "1"};
+             speed: Number(f[4]), speedMin: Number(f[5]), speedMax: Number(f[6])};
     var panel = _root.panel;
     panel.lock.Down_mc._visible = state.locked;
-    panel.ui.Down_mc._visible = state.shown;
     showSlider(panel.fov, state.fov);
     showSlider(panel.speed, state.speed);
 }

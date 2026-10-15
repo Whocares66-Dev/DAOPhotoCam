@@ -37,8 +37,6 @@ constexpr std::wstring_view kLockAction = L"PhotoCamLock";
 // Esc ends photo cam too, for a player who forgets its key (the user, 2026-10-15): in photo cam's
 // key map, so while it is on Esc does not open the game's menu, and otherwise does.
 constexpr std::wstring_view kExitAction = L"PhotoCamExit";
-// H shows the game's interface over the free view, or hides it (the user, 2026-10-15).
-constexpr std::wstring_view kInterfaceAction = L"PhotoCamInterface";
 
 Session g_session;
 std::chrono::steady_clock::time_point g_lastFrame;
@@ -182,7 +180,7 @@ extern "C" __declspec(dllexport) bool __cdecl DAOLib_Load(const dao::LoaderInfo 
                                     .label = L"On / off",
                                     .key = dao::input::Key::F8,
                                     .modes = {dao::GameMode::Explore, dao::GameMode::Combat, dao::GameMode::FlyCam},
-                                    .section = L"Photo Camera",
+                                    .section = L"Photo Cam",
                                 },
                                 [] { Toggle("key"); }) &&
                             dao::input::RegisterAction(
@@ -191,7 +189,7 @@ extern "C" __declspec(dllexport) bool __cdecl DAOLib_Load(const dao::LoaderInfo 
                                     .label = L"Lock camera",
                                     .key = dao::input::Key::F7,
                                     .modes = {dao::GameMode::FlyCam},
-                                    .section = L"Photo Camera",
+                                    .section = L"Photo Cam",
                                 },
                                 [] { Lock("key"); }) &&
                             dao::input::RegisterAction(
@@ -200,28 +198,13 @@ extern "C" __declspec(dllexport) bool __cdecl DAOLib_Load(const dao::LoaderInfo 
                                     .label = L"Exit",
                                     .key = dao::input::Key::Escape,
                                     .modes = {dao::GameMode::FlyCam},
-                                    .section = L"Photo Camera",
+                                    .section = L"Photo Cam",
                                     .keymap = std::wstring(photocam::game::kKeymap),
                                 },
                                 [] {
                                     if (State().Active())
                                     {
                                         Toggle("key");
-                                    }
-                                }) &&
-                            dao::input::RegisterAction(
-                                {
-                                    .name = std::wstring(kInterfaceAction),
-                                    .label = L"Show game interface",
-                                    .key = dao::input::Key::H,
-                                    .modes = {dao::GameMode::FlyCam},
-                                    .section = L"Photo Camera",
-                                    .keymap = std::wstring(photocam::game::kKeymap),
-                                },
-                                [] {
-                                    if (State().Active())
-                                    {
-                                        photocam::panel::ShowInterface(!photocam::panel::InterfaceShown());
                                     }
                                 }) &&
                             photocam::game::RegisterMoves();

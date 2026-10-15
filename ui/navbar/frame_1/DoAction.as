@@ -34,14 +34,14 @@ function look(button, which)
 // The tooltip the bar's buttons show, as NavButton and Behaviour.DisplayTooltip show it (navbar.gfx,
 // read 2026-10-15): the label with the key bound to it in bold, under the button after a moment,
 // through the game's floating tooltip, or the bar's own tooltip clip where it has one. The user,
-// 2026-10-15: "add a tooltip, 'Photo Camera (F8)'". The key is the one the player bound.
+// 2026-10-15: "add a tooltip, 'Photo Camera (F8)'", then "Photo Cam". The key is the one the player bound.
 function tooltipText()
 {
     var key = flash.external.ExternalInterface.call("GetValue",
                                                      "InputMappings.Mappings.PhotoCamToggle.PrimaryMappedKey");
     var valid = key != undefined && key != null && String(key).length > 0
                 && String(key).lastIndexOf("?") != String(key).length - 1;
-    return "Photo Camera" + (valid ? "  <b>(" + key + ") </b>" : "");
+    return "Photo Cam" + (valid ? "  <b>(" + key + ") </b>" : "");
 }
 
 function setValue(name, value)
