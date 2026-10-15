@@ -19,7 +19,7 @@ When Eluvian (the bench's MCP server, `C:\project\DAOEluvianMCP`, eluvian-agent'
 - `photocam_pose {eye?, headingDegrees?, pitchDegrees?, fovDegrees?, speed?}`: the view placed exactly, for an agent that cannot hold a mouse button; within the flight's limits.
 - `photocam.started`, `photocam.stopped`, `photocam.locked`, each with `by`: key, tool, or (stopped) mode.
 
-The JSON is `src/core/Tools`, tested; `src/plugin/Eluvian.cpp` looks for Eluvian on the first frame and registers. Not yet seen in the game.
+The JSON is `src/core/Tools`, tested; `src/plugin/Eluvian.cpp` looks for Eluvian on the first frame and registers. Seen registered and answering in the game 2026-10-15 (`dev/TESTING.md`).
 
 ## Status
 
@@ -54,7 +54,7 @@ The core's world is the game's: metres, z up. Its heading is the direction the v
 
 Everything is 32-bit, as the game is. Output is `build\<preset>\daolib\plugins\photocam\`; the log is `Documents\BioWare\Dragon Age\daolib\photocam.log` (on this machine under OneDrive). The four runs above are the gate before a merge to master, not before every commit. Last green 2026-10-15.
 
-The game is driven through Eluvian (`.mcp.json`). One main game at a time, shared with other sessions: say so before launching, and check for a running one.
+The game is driven through Eluvian (`.mcp.json`), as the named instance `photocam` on a staged plugins folder, so nothing is deployed (`dev/TESTING.md` has the launch). Other sessions share the machine: check for a running game first, and quit ours after.
 
 ## Style
 
