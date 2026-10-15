@@ -4,7 +4,8 @@
 
 // -- the sidebar and the header ------------------------------------------------------------------
 
-// The camera before the site's name.
+// The camera after the site's name (the user, 2026-10-15: "add camera icon right of top left header
+// text"), as DAOTurnBased's guide has its hourglass.
 .site-title {
   display: flex;
   align-items: center;
@@ -13,7 +14,8 @@
 }
 
 .site-icon {
-  height: 32px;
+  order: 1;
+  height: 24px;
   width: auto;
 }
 

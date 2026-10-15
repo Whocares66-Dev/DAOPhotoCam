@@ -1,6 +1,6 @@
 {%- comment -%}
 The site's title, overriding Just the Docs' own: the gold camera of the game's top bar
-(assets/camera-icon.png, tools/camera_icon.py) before the name.
+(assets/camera-icon.png: build/ui/camera.png, tools/camera_icon.py's, cropped to what is drawn and at 96 high) after the name (its order, _sass/custom/custom.scss).
 {%- endcomment -%}
-<img class="site-icon" src="{{ '/assets/camera-icon.png' | relative_url }}" alt="" width="32" height="32">
+<img class="site-icon" src="{{ '/assets/camera-icon.png' | relative_url }}" alt="" width="117" height="96">
 <span class="site-name">{{ site.title }}</span>
