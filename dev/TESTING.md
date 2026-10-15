@@ -64,3 +64,15 @@ DAOLib master `4b4ff22`, debug, the same save, real keys.
 - `KeyBindings.ini` has `PhotoCamForward_0=Keyboard::Button_W` (and Back S, Left A, Right D) beside the game's `RunCharacterForward_0=Keyboard::Button_W`: both keep W.
 - F8, then W held a second: the view flew 4.0 m along the view, and Lyna did not move.
 - F8 off, then W held a second: Lyna walked (0.9 m from Tamlen before, 2.0 m after).
+
+## 2026-10-15: the panel, the top bar's camera, Esc, Q and E, the cursor
+
+Branch `photocam-panel`, on a local merge of DAOLib's branches for #132 (the cursor held), #133 (screenshots) and #134 (a plugin's screen played while paused) over master `7d21272`. The user played; I drove the tools and read the logs.
+
+- The panel in the bottom right: the options screen's checkbox, sliders and Cancel button imported from `optionsmenu.swf`, in the tooltip's box. It follows the tools' changes (field of view 90, speed 12, the lock), and the user's clicks work while paused: "unlocked by the panel", the sliders, Exit, minimize and maximize.
+- Paused, the game advanced the panel's movie with no time: GFx's own pause, which the game sets on every new movie (lib-agent's probe, `probe.log`). With `kScreenAdvancesWhilePaused`, `photocam.log` says "photocam's movie was paused by the game; it plays on", the tick shows at once, and the glows play (the user).
+- Off, the panel goes with photo cam; the game shows its HUD's screens again as it leaves the fly camera, so the movie itself is hidden too.
+- Screenshots: Eluvian's source "game" and the user's Print Screen (`Screenshot20261015114054715.jpg`) have no panel, and it comes back after.
+- The top bar's camera: before Options, the bar's art one place wider; loaded into the bar's movie (record `NavBar`) once each movie; its tooltip "Photo Camera (F8)"; a click toggles photo cam; back at once with the bar as photo cam ends (the user: "they all work").
+- Esc ends photo cam (it takes the game's ToggleMainMenu while photo cam's key map is on); Q and E fly up and down; the pointer is hidden while the right button looks (the user).
+- Opening and closing play the inventory's sounds.
