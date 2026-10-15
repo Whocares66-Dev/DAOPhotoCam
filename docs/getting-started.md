@@ -23,7 +23,7 @@ Photo Cam is not released yet. It needs a [DAOLib](https://github.com/Whocares66
 
 ## First shot
 
-1. Press <kbd>F8</kbd>, or click the camera in the top bar. The world pauses and the interface hides.
+1. Press <kbd>F8</kbd>, or click the camera button in the top bar. The world pauses and the interface hides.
 2. Hold the right mouse button and move the mouse to look. Fly with <kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd>, <kbd>Q</kbd> and <kbd>E</kbd>.
 3. Click **Capture** in the panel, or press the game's screenshot key. The picture goes where the game's always do: `Documents\BioWare\Dragon Age\Screenshots\User`.
 4. Press <kbd>F8</kbd> or <kbd>Esc</kbd>, or click **Exit**. The camera returns to the party.

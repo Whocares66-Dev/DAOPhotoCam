@@ -30,4 +30,3 @@ Black and white (the user, 2026-10-15: "use a black / white theme"): `_sass/colo
 | `capture.jpg` | the user's own Capture |
 | `photo-cam-on.jpg`, `panel.png` | photo cam on; the panel cropped and doubled |
 | `top-bar.png` | the game's own view, its top bar cropped and doubled |
-| `camera-icon.png` | `build/ui/camera*.png` (`tools/camera_icon.py`) on black, tripled |

@@ -24,10 +24,6 @@ The panel follows the keys: turn the wheel and its slider moves. It is never in 
 
 ## The top bar
 
-A gold camera stands in the game's top bar, before Options. Click it to turn Photo Cam on. Its tooltip names the key bound to it.
+A camera button stands in the game's top bar, before Options. Click it to turn Photo Cam on. Its tooltip names the key bound to it.
 
-![The top bar, the camera before Options]({{ "/assets/img/top-bar.png" | relative_url }}){: .ui width="420" loading="lazy"}
-
-![The camera as it stands, under the pointer, and pressed]({{ "/assets/img/camera-icon.png" | relative_url }}){: .ui width="285" loading="lazy"}
-
-Photo Cam turns on and off with a sound: the same one the inventory and the journal make.
+![The top bar, the camera button before Options]({{ "/assets/img/top-bar.png" | relative_url }}){: .ui width="420" loading="lazy"}

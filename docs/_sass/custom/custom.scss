@@ -94,3 +94,25 @@ kbd {
 .table-wrapper {
   box-shadow: none;
 }
+
+// -- the header's right ---------------------------------------------------------------------------
+
+// GitHub's mark, not the word (_includes/components/aux_nav.html), as DAOTurnBased's guide has it.
+.aux-nav,
+.aux-nav .aux-nav-list,
+.aux-nav .aux-nav-list .aux-nav-list-item {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.github-link {
+  display: flex;
+  align-items: center;
+  margin: 0 1.25rem 0 0.25rem;
+  color: #9a9a9a;
+
+  &:hover {
+    color: #ffffff;
+  }
+}

@@ -16,7 +16,7 @@ A free camera for screenshots in Dragon Age: Origins. Turn it on, and the world 
 - **The world paused**: in a fight too. Nothing moves while you look for the shot.
 - **Field of view** from 15° to 120°, and a speed from 0.5 to 40 m/s.
 - **[A panel]({{ '/panel/' | relative_url }})** in the game's own style, for the lock, the field of view, the speed and the shot. It is never in a screenshot.
-- **[A camera in the top bar]({{ '/panel/' | relative_url }}#the-top-bar)** to turn it on.
+- **[A camera button in the top bar]({{ '/panel/' | relative_url }}#the-top-bar)** to turn it on.
 - **Back where you were**: off, the camera returns to the party, and the game carries on.
 
 ![Over the shoulder, a shot taken with Capture]({{ "/assets/img/capture.jpg" | relative_url }}){: .screenshot loading="lazy"}
