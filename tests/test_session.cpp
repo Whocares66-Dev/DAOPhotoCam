@@ -67,7 +67,8 @@ TEST_CASE("End gives back the game's camera as taken over, once", "[session]")
     CHECK_FALSE(session.End());
 }
 
-TEST_CASE("The speed the player chose is kept for the next start; the view is not", "[session]")
+// The user, 2026-10-15: "move speed should reset, since fov does, on exit".
+TEST_CASE("Each start begins at the default speed and the game's field of view", "[session]")
 {
     Session session;
     session.Toggle(Close());
@@ -75,13 +76,14 @@ TEST_CASE("The speed the player chose is kept for the next start; the view is no
     input.wheel = 2;
     input.shift = false;
     session.Fly()->Step(input);
-    const float chosen = session.Fly()->Speed();
+    const float first = session.Fly()->Speed();
     input.shift = true;
     session.Fly()->Step(input);
     session.Toggle(Close());
 
     session.Toggle(Close());
-    CHECK(session.Fly()->Speed() == chosen);
+    CHECK(first != 4.0f);
+    CHECK(session.Fly()->Speed() == 4.0f);
     CHECK(session.Fly()->FovDegrees() == 50.0f);
 }
 

@@ -86,7 +86,6 @@ class Session
     std::optional<FlyCamera> m_fly;
     std::optional<GameCamera> m_taken;
     bool m_locked = false;
-    float m_speed = 4.0f; // the speed the player chose last, kept for the next start
 };
 
 } // namespace photocam

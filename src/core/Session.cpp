@@ -61,7 +61,7 @@ Toggled Session::Toggle(const GameCamera &game)
         return Toggled::Tactical;
     }
     m_taken = game;
-    m_fly.emplace(game.view, game.fovDegrees, m_speed);
+    m_fly.emplace(game.view, game.fovDegrees);
     return Toggled::Started;
 }
 
@@ -71,7 +71,6 @@ std::optional<GameCamera> Session::End()
     {
         return std::nullopt;
     }
-    m_speed = m_fly->Speed();
     m_fly.reset();
     m_locked = false;
     return std::exchange(m_taken, std::nullopt);
