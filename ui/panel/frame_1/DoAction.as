@@ -39,7 +39,7 @@ var SMALL_WIDTH = 210; // the panel made small: its title and the button that br
 var SMALL_HEIGHT = 64;
 var SQUARE = 22;
 var TITLE_MIDDLE = 13; // the title row's middle, below its top
-var EXIT_SCALE = 70;
+var BUTTON_GAP = 6; // between Capture and Exit
 var OPEN_BOOK = 2; // SoundEvents.ST_OPEN_BOOK
 var CLOSE_BOOK = 4; // SoundEvents.ST_CLOSE_BOOK
 
@@ -138,6 +138,10 @@ function playTo(clip, last)
         {
             this.gotoAndStop(this._currentframe + (this.target > this._currentframe ? 1 : -1));
         }
+        if (this._parent.label != undefined)
+        {
+            setAllText(this._parent, this._parent.label);
+        }
     };
 }
 
@@ -157,22 +161,22 @@ function hover(clip)
 // ---------------------------------------------------------------------------------------------
 // The checkbox
 
-// One of the options screen's checkboxes, its label `text`; `onClick` asks for the change.
-function checkBox(panel, name, depth, y, text, onClick)
+function lockBox(panel, y)
 {
-    var box = panel.attachMovie("checkbox_mc", name, depth);
+    var box = panel.attachMovie("checkbox_mc", "lock", 20);
     stopAll(box);
     box._x = PAD;
     box._y = y;
-    box.Label_mc.TextField.text = text;
-    // The tick is Down_mc's second frame: it stands there and is shown or hidden, as it was while a
-    // paused movie did not go to a frame (seen 2026-10-15, before DAOLib #134).
+    box.Label_mc.TextField.text = "Lock camera";
+    // The tick is Down_mc's second frame. A paused movie does not go to a frame (seen 2026-10-15:
+    // the tick did not come while paused, a thumb's place did), so it stands on that frame from
+    // the start and is shown or hidden.
     box.Down_mc.gotoAndStop(2);
     box.Down_mc._visible = false;
     box.onRelease = function()
     {
         click();
-        onClick();
+        ask("PhotoCam_SetLocked", !state.locked);
         refresh();
     };
     return box;
@@ -308,49 +312,50 @@ function metres(v)
 // ---------------------------------------------------------------------------------------------
 // The button
 
-// The options screen's Cancel button (its export ArrowButton), the curved one at its bottom right,
-// which leaves it as Exit leaves photo cam: the user, 2026-10-15, of the plain push button first
-// used, "can we not reuse an existing options menu button instead of creating one that doesn't fit
-// the theme?"
-function exitButton(panel, y)
+// A button of the game's own menu, the one Esc opens (mainmenu.gfx's bu_escape_m: Resume Game, Save
+// Game), at a size for two side by side: the user, 2026-10-15, "how about we use these buttons",
+// after the options screen's OK and Cancel. `label` stays on it through its frames: each of its
+// looks has a text field of its own, which came back with its default text ("OK Button") as the
+// button was pressed.
+function menuButton(panel, name, depth, label, x, y, width, message)
 {
-    var button = panel.attachMovie("ArrowButton", "exit", 50);
+    var button = panel.attachMovie("bu_escape_m", name, depth);
     stopAll(button);
-    setButtonText(button, "Exit");
-    // Smaller than the options screen has it (the user: "exit button should be smaller").
-    button._xscale = button._yscale = EXIT_SCALE;
-    button._x = WIDTH - PAD + 8 - button._width;
+    button.label = label;
+    button._xscale = button._yscale = width / button._width * 100;
+    button._x = x;
     button._y = y;
+    setAllText(button, label);
     hover(button);
     button.onPress = function()
     {
         this.Down_mc.gotoAndStop(2);
+        setAllText(this, this.label);
     };
     button.onRelease = function()
     {
         this.Down_mc.gotoAndStop(1);
+        setAllText(this, this.label);
         click();
-        ask("PhotoCam_Exit");
+        ask(message);
     };
     return button;
 }
 
-// The first text field anywhere in a button, its label.
-function setButtonText(clip, text)
+// Every text field in a clip and the clips in it.
+function setAllText(clip, text)
 {
     for (var child in clip)
     {
         if (clip[child] instanceof TextField)
         {
             clip[child].text = text;
-            return true;
         }
-        if (typeof(clip[child]) == "movieclip" && clip[child]._parent == clip && setButtonText(clip[child], text))
+        else if (typeof(clip[child]) == "movieclip" && clip[child]._parent == clip)
         {
-            return true;
+            setAllText(clip[child], text);
         }
     }
-    return false;
 }
 
 // What a clip holds, for the log while an imported control is learned.
@@ -431,23 +436,18 @@ function build()
         showSmall(true);
     });
     y += 34;
-    panel.lock = checkBox(panel, "lock", 20, y, "Lock camera", function()
-    {
-        ask("PhotoCam_SetLocked", !state.locked);
-    });
-    y += 34;
-    // The user, 2026-10-15: "a check under lock camera to toggle game ui, default off".
-    panel.ui = checkBox(panel, "ui", 21, y, "Show interface", function()
-    {
-        ask("PhotoCam_SetInterface", !state.shown);
-    });
+    panel.lock = lockBox(panel, y);
     y += 40;
     panel.fov = slider(panel, "fov", 30, y, "Field of view", fovFraction, fovOf, fovStep, degrees, "PhotoCam_SetFov");
     y += 54;
     panel.speed = slider(panel, "speed", 40, y, "Move speed", speedFraction, speedOf, speedStep, metres,
                          "PhotoCam_SetSpeed");
     y += 58;
-    var exit = exitButton(panel, y);
+    // Capture and Exit side by side, Exit at the right (the user: "add button left of exit,
+    // capture, to take screenshot").
+    var half = (WIDTH - 2 * PAD - BUTTON_GAP) / 2;
+    menuButton(panel, "capture", 51, "Capture", PAD, y, half, "PhotoCam_Capture");
+    var exit = menuButton(panel, "exit", 50, "Exit", PAD + half + BUTTON_GAP, y, half, "PhotoCam_Exit");
     y += exit._height;
     var back = panel.createEmptyMovieClip("back", 0);
     tooltipBox(back, WIDTH, y + PAD - 4);
@@ -498,10 +498,9 @@ function refresh(answer)
     }
     var f = String(answer).split(FIELD);
     state = {locked: f[0] == "1", fov: Number(f[1]), fovMin: Number(f[2]), fovMax: Number(f[3]),
-             speed: Number(f[4]), speedMin: Number(f[5]), speedMax: Number(f[6]), shown: f[7] == "1"};
+             speed: Number(f[4]), speedMin: Number(f[5]), speedMax: Number(f[6])};
     var panel = _root.panel;
     panel.lock.Down_mc._visible = state.locked;
-    panel.ui.Down_mc._visible = state.shown;
     showSlider(panel.fov, state.fov);
     showSlider(panel.speed, state.speed);
 }

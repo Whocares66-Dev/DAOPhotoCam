@@ -6,7 +6,7 @@ A free camera for screenshots in Dragon Age: Origins, a [DAOLib](https://github.
 
 While the photo camera is on the world is paused, in a fight too, so nothing changes in the shot, and the game's interface is hidden. Off, the game carries on as it was.
 
-A gold camera in the game's top bar, before Options, turns it on. In the screen's bottom right a panel, made of the game's own options controls, has the lock, a switch for the game's interface, the field of view and the speed, and Exit; its square at the top right makes it small. The panel is never in a screenshot. Each start begins at 4 m/s and the game's field of view.
+A gold camera in the game's top bar, before Options, turns it on. In the screen's bottom right a panel, made of the game's own options controls, has the lock, the field of view and the speed, Capture (the game's screenshot) and Exit; its square at the top right makes it small. The panel is never in a screenshot. Each start begins at 4 m/s and the game's field of view.
 
 ## Controls
 
@@ -15,7 +15,6 @@ A gold camera in the game's top bar, before Options, turns it on. In the screen'
 | F8 | Photo camera on and off. Starts from the close (over-the-shoulder) view, not the tactical view; off puts the camera back where it was |
 | Esc | Photo camera off, as F8 |
 | F7 | Lock the photo camera where it is: the view holds against the keys and mouse. Again to unlock |
-| H | Show the game's interface over the view, or hide it again |
 | Right mouse button held, mouse | Look around (the pointer hidden) |
 | W / S | Fly forward / back, the way the view looks |
 | A / D | Fly left / right |
@@ -23,7 +22,7 @@ A gold camera in the game's top bar, before Options, turns it on. In the screen'
 | Wheel up / down | Faster / slower (0.5 to 40 m/s) |
 | Shift + wheel up / down | Narrower / wider field of view (15 to 120 degrees, top to bottom) |
 
-Every key but the mouse's and the wheel is rebound in the options screen's Controls tab, under "Photo Camera". Esc, H and W, A, S, D, Q, E are photo cam's own while it is on: the game keeps its own use of those keys otherwise.
+Every key but the mouse's and the wheel is rebound in the options screen's Controls tab, under "Photo Camera". Esc and W, A, S, D, Q, E are photo cam's own while it is on: the game keeps its own use of those keys otherwise.
 
 ## For agents
 

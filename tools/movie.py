@@ -72,7 +72,8 @@ PANEL = Movie(
     "photocam",
     REPO / "ui" / "panel",
     (1280, 720),  # the panel stands by the view's corner, measured as it runs
-    imports=FONTS | {"optionsmenu.swf": ["checkbox_mc", "slider_m", "ArrowButton"]},
+    imports=FONTS
+    | {"optionsmenu.swf": ["checkbox_mc", "slider_m"], "mainmenu.swf": ["bu_escape_m"]},
 )
 # Loaded into the top bar's movie, on its stage; its pictures are the camera's three looks.
 NAVBAR = Movie(
