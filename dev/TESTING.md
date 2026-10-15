@@ -73,6 +73,6 @@ Branch `photocam-panel`, on a local merge of DAOLib's branches for #132 (the cur
 - Paused, the game advanced the panel's movie with no time: GFx's own pause, which the game sets on every new movie (lib-agent's probe, `probe.log`). With `kScreenAdvancesWhilePaused`, `photocam.log` says "photocam's movie was paused by the game; it plays on", the tick shows at once, and the glows play (the user).
 - Off, the panel goes with photo cam; the game shows its HUD's screens again as it leaves the fly camera, so the movie itself is hidden too.
 - Screenshots: Eluvian's source "game" and the user's Print Screen (`Screenshot20261015114054715.jpg`) have no panel, and it comes back after.
-- The top bar's camera: before Options, the bar's art one place wider; loaded into the bar's movie (record `NavBar`) once each movie; its tooltip "Photo Camera (F8)"; a click toggles photo cam; back at once with the bar as photo cam ends (the user: "they all work").
+- The top bar's camera: before Options, the bar's art one place wider; loaded into the bar's movie (record `NavBar`) once each movie; its tooltip "Photo Cam (F8)" (first "Photo Camera"); a click toggles photo cam; back at once with the bar as photo cam ends (the user: "they all work").
 - Esc ends photo cam (it takes the game's ToggleMainMenu while photo cam's key map is on); Q and E fly up and down; the pointer is hidden while the right button looks (the user).
 - Opening and closing play the inventory's sounds.
