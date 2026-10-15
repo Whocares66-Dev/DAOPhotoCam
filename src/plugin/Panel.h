@@ -12,6 +12,12 @@ void Register();
 // Adds the panel's screen once the game's interface is up. Call every frame on the game thread.
 void Frame();
 
+// Shows the game's interface over the free view, or hides it again as the fly camera has it. The
+// user, 2026-10-15: "a check under lock camera to toggle game ui, default off", and H for it.
+void ShowInterface(bool shown);
+// Whether the game's interface is shown over the free view.
+bool InterfaceShown();
+
 // Shows the panel, or hides it. Call on the game thread as photo cam starts and stops.
 void Show(bool shown);
 

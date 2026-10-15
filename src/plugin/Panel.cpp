@@ -32,6 +32,11 @@ bool g_shown = false;
 std::string g_state;
 // The state last pushed into the movie, so it is pushed on a change only.
 std::string g_pushed;
+// The game's interface shown over the free view (ShowInterface): off at each start.
+bool g_interface = false;
+// The HUD's screens, as the GUI system lists them while exploring (Eluvian's gui, 2026-10-15): in
+// the fly camera's mode they are listed as shown but not drawn.
+constexpr std::wstring_view kHud[] = {L"Portraits", L"Minimap", L"ArmyControl", L"NavBar", L"Quickbar"};
 
 std::optional<double> NumberOf(const dao::gui::Call &call)
 {
@@ -47,8 +52,8 @@ std::string StateText()
         return "off";
     }
     const FlyLimits &limits = fly->Limits();
-    return std::format("{}|{}|{}|{}|{}|{}|{}", plugin::State().IsLocked() ? 1 : 0, fly->FovDegrees(), limits.minFov,
-                       limits.maxFov, fly->Speed(), limits.minSpeed, limits.maxSpeed);
+    return std::format("{}|{}|{}|{}|{}|{}|{}|{}", plugin::State().IsLocked() ? 1 : 0, fly->FovDegrees(), limits.minFov,
+                       limits.maxFov, fly->Speed(), limits.minSpeed, limits.maxSpeed, g_interface ? 1 : 0);
 }
 
 void GetState(const dao::gui::Call &call)
@@ -80,6 +85,15 @@ void SetLocked(const dao::gui::Call &call)
     if (wanted && plugin::State().Active() && *wanted != plugin::State().IsLocked())
     {
         plugin::Lock("panel");
+    }
+}
+
+void SetInterface(const dao::gui::Call &call)
+{
+    const auto wanted = call.args.empty() ? std::nullopt : call.args[0].AsBool();
+    if (wanted && plugin::State().Active())
+    {
+        ShowInterface(*wanted);
     }
 }
 
@@ -159,6 +173,7 @@ void Register()
 {
     dao::gui::OnExternalInterface("PhotoCam_GetState", &GetState);
     dao::gui::OnExternalInterface("PhotoCam_SetLocked", &SetLocked);
+    dao::gui::OnExternalInterface("PhotoCam_SetInterface", &SetInterface);
     dao::gui::OnExternalInterface("PhotoCam_SetFov", &SetFov);
     dao::gui::OnExternalInterface("PhotoCam_SetSpeed", &SetSpeed);
     dao::gui::OnExternalInterface("PhotoCam_Exit", &Exit);
@@ -204,11 +219,47 @@ void Frame()
     }
 }
 
+bool InterfaceShown()
+{
+    return g_interface;
+}
+
+void ShowInterface(bool shown)
+{
+    if (shown == g_interface)
+    {
+        return;
+    }
+    g_interface = shown;
+    for (const std::wstring_view name : kHud)
+    {
+        if (shown)
+        {
+            dao::gui::ShowScreen(name);
+        }
+        dao::gui::Movie movie{dao::gui::MovieOf(dao::gui::FindOwner(name))};
+        movie.SetVariable("_root._visible", dao::gui::Value::Bool(shown));
+        // Whole, not as the game's fade out left them as it paused (seen 2026-10-15: dimmed).
+        movie.SetVariable("_root._alpha", dao::gui::Value::Number(100));
+    }
+    spdlog::info("photo cam: the game's interface {} over the free view", shown ? "shown" : "hidden");
+}
+
 void Show(bool shown)
 {
     if (!g_added || shown == g_shown)
     {
         return;
+    }
+    // Each start without the game's interface, and the game's own way with it given back after.
+    if (g_interface)
+    {
+        ShowInterface(false);
+        for (const std::wstring_view name : kHud)
+        {
+            dao::gui::Movie movie{dao::gui::MovieOf(dao::gui::FindOwner(name))};
+            movie.SetVariable("_root._visible", dao::gui::Value::Bool(true));
+        }
     }
     g_shown = shown;
     g_pushed.clear();

@@ -157,22 +157,22 @@ function hover(clip)
 // ---------------------------------------------------------------------------------------------
 // The checkbox
 
-function lockBox(panel, y)
+// One of the options screen's checkboxes, its label `text`; `onClick` asks for the change.
+function checkBox(panel, name, depth, y, text, onClick)
 {
-    var box = panel.attachMovie("checkbox_mc", "lock", 20);
+    var box = panel.attachMovie("checkbox_mc", name, depth);
     stopAll(box);
     box._x = PAD;
     box._y = y;
-    box.Label_mc.TextField.text = "Lock camera";
-    // The tick is Down_mc's second frame. A paused movie does not go to a frame (seen 2026-10-15:
-    // the tick did not come while paused, a thumb's place did), so it stands on that frame from
-    // the start and is shown or hidden.
+    box.Label_mc.TextField.text = text;
+    // The tick is Down_mc's second frame: it stands there and is shown or hidden, as it was while a
+    // paused movie did not go to a frame (seen 2026-10-15, before DAOLib #134).
     box.Down_mc.gotoAndStop(2);
     box.Down_mc._visible = false;
     box.onRelease = function()
     {
         click();
-        ask("PhotoCam_SetLocked", !state.locked);
+        onClick();
         refresh();
     };
     return box;
@@ -431,7 +431,16 @@ function build()
         showSmall(true);
     });
     y += 34;
-    panel.lock = lockBox(panel, y);
+    panel.lock = checkBox(panel, "lock", 20, y, "Lock camera", function()
+    {
+        ask("PhotoCam_SetLocked", !state.locked);
+    });
+    y += 34;
+    // The user, 2026-10-15: "a check under lock camera to toggle game ui, default off".
+    panel.ui = checkBox(panel, "ui", 21, y, "Show interface", function()
+    {
+        ask("PhotoCam_SetInterface", !state.shown);
+    });
     y += 40;
     panel.fov = slider(panel, "fov", 30, y, "Field of view", fovFraction, fovOf, fovStep, degrees, "PhotoCam_SetFov");
     y += 54;
@@ -489,9 +498,10 @@ function refresh(answer)
     }
     var f = String(answer).split(FIELD);
     state = {locked: f[0] == "1", fov: Number(f[1]), fovMin: Number(f[2]), fovMax: Number(f[3]),
-             speed: Number(f[4]), speedMin: Number(f[5]), speedMax: Number(f[6])};
+             speed: Number(f[4]), speedMin: Number(f[5]), speedMax: Number(f[6]), shown: f[7] == "1"};
     var panel = _root.panel;
     panel.lock.Down_mc._visible = state.locked;
+    panel.ui.Down_mc._visible = state.shown;
     showSlider(panel.fov, state.fov);
     showSlider(panel.speed, state.speed);
 }
