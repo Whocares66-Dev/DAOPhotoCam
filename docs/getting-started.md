@@ -33,7 +33,3 @@ Photo Cam starts from the close view, in exploring or in a fight. It does not st
 ## Remove
 
 Delete `bin_ship\daolib\plugins\photocam`.
-
-## Build from source
-
-Visual Studio 2022, vcpkg, Python with Pillow, Java and [JPEXS FFDec](https://github.com/jindrapetrik/jpexs-decompiler). The [README](https://github.com/Whocares66-Dev/DAOPhotoCam#building) has the steps.
