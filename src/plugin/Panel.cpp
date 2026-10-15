@@ -25,9 +25,6 @@ constexpr std::wstring_view kMovie = L"photocam";
 constexpr std::wstring_view kBarMovie = L"NavBar"; // the record's name, as dao::gui::NameOf gives it
 constexpr std::wstring_view kBarButton = L"photocam_navbar";
 constexpr const char *kBarClip = "PhotoCamNav_mc";
-// How often the bar is looked at for the button: LoadInto answers at once where it is there.
-constexpr int kBarEvery = 30;
-int g_barTick = 0;
 
 bool g_added = false;
 bool g_shown = false;
@@ -110,23 +107,35 @@ void BarToggle(const dao::gui::Call & /*call*/)
     plugin::Toggle("bar");
 }
 
-// Loads the camera's button into the top bar's movie, while there is one; the bar's movie is made
-// again on a load, and its clip with it, so it is looked at every so often.
+// The top bar's movie the camera's button was last loaded into.
+void *g_barView = nullptr;
+
+// Loads the camera's button into the top bar's movie, once for each movie the game makes: it makes
+// the bar's movie again as the HUD comes back (a load, the fly camera's end), the button's clip
+// gone with the old one. A frame only compares the movie with the last; LoadInto runs on a change,
+// and DAOLib keeps the button movie's bytes. (Looked at every 30 frames, the camera came back a
+// moment after the bar: the user, 2026-10-15; "do we need to do this work every frame?")
 void Bar()
 {
-    if (++g_barTick % kBarEvery != 0)
-    {
-        return;
-    }
     void *owner = dao::gui::FindOwner(kBarMovie);
-    if (owner == nullptr)
+    void *view = owner != nullptr ? dao::gui::MovieOf(owner) : nullptr;
+    if (view == g_barView)
     {
         return;
     }
-    dao::gui::Movie movie{dao::gui::MovieOf(owner)};
-    if (movie && !dao::gui::LoadInto(movie, kBarClip, kBarButton))
+    g_barView = view;
+    if (view == nullptr)
+    {
+        return;
+    }
+    if (dao::gui::LoadInto(dao::gui::Movie{view}, kBarClip, kBarButton))
+    {
+        spdlog::info("photo cam: the camera's button is loaded into the top bar's movie");
+    }
+    else
     {
         spdlog::warn("photo cam: the top bar's camera button could not be loaded");
+        g_barView = nullptr; // tried again next frame
     }
 }
 
@@ -184,7 +193,10 @@ void Frame()
         return;
     }
     // The interface is up from the main menu's first frame; until then AddScreen says no.
-    g_added = dao::gui::AddScreen(kScreen, kMovie, dao::gui::kLayerHud);
+    // Played on while the game is paused, as photo cam keeps it: the game pauses every new movie
+    // of its own accord (GFx's pause), so the panel's frames, its tick and its glows stood still
+    // (DAOLib #134).
+    g_added = dao::gui::AddScreen(kScreen, kMovie, dao::gui::kLayerHud, dao::gui::kScreenAdvancesWhilePaused);
     if (g_added)
     {
         spdlog::info("photo cam: the panel's screen is added; its movie {}",
