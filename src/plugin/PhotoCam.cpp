@@ -97,7 +97,6 @@ std::optional<Toggled> Toggle(std::string_view by)
     if (toggled == Toggled::Started)
     {
         g_lastFrame = std::chrono::steady_clock::now();
-        game::ReadInput(0.0f); // what moved before the start is not the flight's
         game::Withhold(true);
         eluvian::Emit(tools::kStarted, tools::StartedJson(*g_session.Fly(), by));
     }
@@ -117,7 +116,6 @@ Locked Lock(std::string_view by)
         return locked;
     }
     // Locked, the view takes no input, so the game has its own back.
-    game::ReadInput(0.0f); // what moved while locked is not the flight's
     game::Withhold(locked == Locked::Unlocked);
     eluvian::Emit(tools::kLocked, tools::LockedJson(locked == Locked::Locked, by));
     return locked;
