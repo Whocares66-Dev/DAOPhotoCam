@@ -1,0 +1,15 @@
+{
+    "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
+    "name": "daophotocam",
+    "version-string": "0.1.0",
+    "dependencies": [
+        "catch2",
+        {
+            "name": "directxtex",
+            "default-features": false
+        },
+        "detours",
+        "nlohmann-json",
+        "spdlog"
+    ]
+}
