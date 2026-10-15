@@ -53,8 +53,8 @@ struct FlyLimits
     float minSpeed = 0.5f;           // metres a second
     float maxSpeed = 40.0f;          // metres a second
     float speedStep = 1.25f;         // the speed is multiplied or divided by this per notch
-    float minFov = 30.0f;            // degrees
-    float maxFov = 150.0f;           // degrees
+    float minFov = 15.0f;            // degrees, vertical, as the game measures it
+    float maxFov = 120.0f;           // degrees, vertical
     float fovStep = 5.0f;            // degrees per notch
     float radiansPerCount = 0.0025f; // the view's turn per unit of mouse movement
     float maxPitch = 1.5533430f;     // 89 degrees: never straight up or down, where heading is lost

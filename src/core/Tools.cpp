@@ -319,7 +319,7 @@ std::string PoseDescriptor()
                                         "Default: the eye stays and the view turns to face it.")},
             {"height", NumberProperty("With `lookAt`: how far above it to aim, in metres. Default: 1.5 for a "
                                       "creature or object, whose position is at its feet; 0 for a point.")},
-            {"fovDegrees", NumberProperty("The field of view, 30 to 150 degrees.")},
+            {"fovDegrees", NumberProperty("The field of view, top to bottom of the picture, 15 to 120 degrees.")},
             {"speed", NumberProperty("The flying speed, 0.5 to 40 metres a second.")}}}}}}
         .dump();
 }

@@ -17,7 +17,7 @@ While the photo camera is on the world is paused, in a fight too, so nothing cha
 | A / D | Fly left / right |
 | Q / E | Fly straight up / down |
 | Wheel up / down | Faster / slower (0.5 to 40 m/s) |
-| Shift + wheel up / down | Narrower / wider field of view (30 to 150 degrees) |
+| Shift + wheel up / down | Narrower / wider field of view (15 to 120 degrees, top to bottom) |
 
 F7, F8 and W, A, S, D, Q, E are rebound in the options screen's Controls tab, under "Photo Camera". Photo cam's W, A, S, D, Q and E are its own: the game keeps its own use of those keys, and they fly the camera only while photo cam is on.
 

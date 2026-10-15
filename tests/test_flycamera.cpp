@@ -179,7 +179,7 @@ TEST_CASE("The wheel sets the speed within its limits", "[fly][wheel]")
     CHECK(fly.FovDegrees() == 60.0f);
 }
 
-TEST_CASE("Shift and the wheel set the field of view, 30 to 150, up narrows it", "[fly][wheel]")
+TEST_CASE("Shift and the wheel set the field of view, 15 to 120, up narrows it", "[fly][wheel]")
 {
     auto fly = Level(4.0f, 60.0f);
     auto input = Second();
@@ -192,17 +192,17 @@ TEST_CASE("Shift and the wheel set the field of view, 30 to 150, up narrows it",
     CHECK(fly.FovDegrees() == Approx(70.0f));
     input.wheel = 100;
     fly.Step(input);
-    CHECK(fly.FovDegrees() == 30.0f);
+    CHECK(fly.FovDegrees() == 15.0f);
     input.wheel = -100;
     fly.Step(input);
-    CHECK(fly.FovDegrees() == 150.0f);
+    CHECK(fly.FovDegrees() == 120.0f);
     CHECK(fly.Speed() == 4.0f);
 }
 
 TEST_CASE("A start outside the limits is brought within them", "[fly]")
 {
     FlyCamera fly(Pose{{1.0f, 2.0f, 3.0f}, 7.0f, 2.0f}, 10.0f, 1000.0f);
-    CHECK(fly.FovDegrees() == 30.0f);
+    CHECK(fly.FovDegrees() == 15.0f);
     CHECK(fly.Speed() == fly.Limits().maxSpeed);
     CHECK(fly.Current().pitch == Approx(fly.Limits().maxPitch));
     CHECK(fly.Current().heading == Approx(7.0f - (2.0f * kPi)));
