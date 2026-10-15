@@ -1,0 +1,96 @@
+// The guide's own touches over its black and white scheme (color_schemes/photocam.scss): links
+// underlined rather than coloured, a picture from the game with no frame and never wider than the
+// text, a key drawn as a key, and a table of rows with a rule between them.
+
+// -- the sidebar and the header ------------------------------------------------------------------
+
+// The camera before the site's name.
+.site-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #ffffff;
+}
+
+.site-icon {
+  height: 32px;
+  width: auto;
+}
+
+.site-title .site-name {
+  font-size: 1.25rem;
+  white-space: nowrap;
+}
+
+.nav-list .nav-list-item .nav-list-link {
+  color: #d8d8d8;
+
+  &:hover {
+    color: #ffffff;
+    background-image: linear-gradient(90deg, rgba(255, 255, 255, 0.1), transparent);
+  }
+
+  &.active {
+    color: #ffffff;
+    font-weight: 600;
+    background-image: linear-gradient(90deg, rgba(255, 255, 255, 0.16), transparent);
+  }
+}
+
+// -- the text ------------------------------------------------------------------------------------
+
+.main-content a:not(.btn) {
+  text-decoration: underline;
+  text-decoration-color: #9a9a9a;
+  text-underline-offset: 0.2em;
+
+  &:hover {
+    text-decoration-color: #ffffff;
+  }
+}
+
+// A frame from the game: no border, never wider than the text, a little room under it.
+.main-content img.screenshot {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 1rem 0 1.5rem;
+}
+
+// A small picture of the interface, at its own size or less.
+.main-content img.ui {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 1rem 0 1.5rem;
+}
+
+// A key, drawn as a key.
+kbd {
+  display: inline-block;
+  padding: 0.05em 0.45em;
+  border: 1px solid #9a9a9a;
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 0.85em;
+  color: #ffffff;
+  background: #121212;
+}
+
+// A table: rows with a rule between them, no grid.
+.main-content table {
+  border-collapse: collapse;
+  box-shadow: none;
+}
+
+.main-content th,
+.main-content td {
+  border: none;
+  border-bottom: 1px solid #2a2a2a;
+  background: transparent;
+}
+
+.table-wrapper {
+  box-shadow: none;
+}

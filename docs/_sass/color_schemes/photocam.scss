@@ -1,0 +1,31 @@
+// Black and white, as a Just the Docs colour scheme (the user, 2026-10-15: "use a black / white
+// theme"): white on black, greys between, no colour but the game's own pictures'. What is not a
+// colour is in custom/custom.scss.
+
+// The theme's own dark scheme first, for what is not named here (code's colours among it).
+@import "./color_schemes/dark";
+
+$pc-black: #000000;
+$pc-black-light: #121212;
+$pc-grey-dark: #2a2a2a;
+$pc-grey: #9a9a9a;
+$pc-white-dim: #d8d8d8;
+$pc-white: #ffffff;
+
+$color-scheme: dark;
+$body-background-color: $pc-black;
+$body-heading-color: $pc-white;
+$body-text-color: $pc-white-dim;
+$link-color: $pc-white;
+$nav-child-link-color: $pc-grey;
+$sidebar-color: $pc-black;
+$base-button-color: $pc-black-light;
+$btn-primary-color: $pc-grey-dark;
+$code-background-color: $pc-black-light;
+$code-linenumber-color: $pc-grey;
+$feedback-color: $pc-black-light;
+$table-background-color: $pc-black;
+$search-background-color: $pc-black-light;
+$search-foreground-color: $pc-white-dim;
+$search-result-preview-color: $pc-grey;
+$border-color: $pc-grey-dark;
