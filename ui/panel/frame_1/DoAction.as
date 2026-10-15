@@ -40,6 +40,8 @@ var SMALL_HEIGHT = 64;
 var SQUARE = 22;
 var TITLE_MIDDLE = 13; // the title row's middle, below its top
 var BUTTON_GAP = 6; // between Capture and Exit
+var MENU_TALLER = 1.35; // the buttons' height over what their width's scale gives
+var MENU_TEXT = 15; // the buttons' letters, in pixels, as the Esc menu's look beside the panel's
 var OPEN_BOOK = 2; // SoundEvents.ST_OPEN_BOOK
 var CLOSE_BOOK = 4; // SoundEvents.ST_CLOSE_BOOK
 
@@ -322,7 +324,10 @@ function menuButton(panel, name, depth, label, x, y, width, message)
     var button = panel.attachMovie("bu_escape_m", name, depth);
     stopAll(button);
     button.label = label;
-    button._xscale = button._yscale = width / button._width * 100;
+    button._xscale = width / button._width * 100;
+    // A little taller than its width makes it (the user, 2026-10-15: "you can stretch the buttons a
+    // little taller").
+    button._yscale = button._xscale * MENU_TALLER;
     button._x = x;
     button._y = y;
     setAllText(button, label);
@@ -342,20 +347,49 @@ function menuButton(panel, name, depth, label, x, y, width, message)
     return button;
 }
 
-// Every text field in a clip and the clips in it.
+// Every text field in a clip and the clips in it, the letters MENU_TEXT pixels high on the screen
+// whatever the button is scaled to (the user, 2026-10-15: "capture / exit font should be bigger").
 function setAllText(clip, text)
 {
     for (var child in clip)
     {
-        if (clip[child] instanceof TextField)
+        var field = clip[child];
+        if (field instanceof TextField)
         {
-            clip[child].text = text;
+            var format = field.getTextFormat();
+            format.size = Math.round(MENU_TEXT * 100 / textScale(field));
+            field.setNewTextFormat(format);
+            field.text = text;
+            field.setTextFormat(format);
+            // Grown to its letters and kept about the middle it had, where the smaller letters
+            // were clipped at the bottom (seen 2026-10-15).
+            if (field.middle == undefined)
+            {
+                field.middle = field._y + field._height / 2;
+                field.centre = field._x + field._width / 2;
+            }
+            field.autoSize = "center";
+            // As wide as tall, the button being stretched taller than wide (MENU_TALLER).
+            field._xscale = MENU_TALLER * 100;
+            field._x = field.centre - field._width / 2;
+            field._y = field.middle - field._height / 2;
         }
-        else if (typeof(clip[child]) == "movieclip" && clip[child]._parent == clip)
+        else if (typeof(field) == "movieclip" && field._parent == clip)
         {
-            setAllText(clip[child], text);
+            setAllText(field, text);
         }
     }
+}
+
+// How much a clip is scaled on the screen, in percent, by it and the clips it is in.
+function textScale(clip)
+{
+    var scale = 100;
+    for (var at = clip._parent; at != undefined && at != _root; at = at._parent)
+    {
+        scale = scale * at._yscale / 100;
+    }
+    return scale;
 }
 
 // What a clip holds, for the log while an imported control is learned.
