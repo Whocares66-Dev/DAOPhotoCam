@@ -43,11 +43,18 @@ void Freeze();
 // Gives the game back the pause Freeze found. Call after Release.
 void Thaw();
 
+// Registers the flight's keys as actions the player rebinds under "Photo Camera": forward, back,
+// left and right, W, S, A and D by default, in photo cam's own key map, so they share their keys
+// with the game's walking. Call from DAOLib_Load.
+// @return false if DAOLib refused one
+bool RegisterMoves();
+
 // The player's input since the last call, for the flight. Call once a frame on the game thread.
 FlyInput ReadInput(float seconds);
 
 // Withholds the game's own reaction to the keys and mouse photo cam flies by (moving the
-// party, turning, panning and zooming its camera), or gives it back.
+// party, turning, panning and zooming its camera) and turns photo cam's key map on, or gives the
+// game them back.
 void Withhold(bool withheld);
 
 } // namespace photocam::game

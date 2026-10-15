@@ -56,3 +56,11 @@ The same branch and save. The user: "the whole world should probably pause so th
 - Off: the game went back to combat unpaused, and the fight went on (Tamlen killed a wolf).
 - Paused first by Eluvian's `pause`, then photo cam on and off: back in combat and still paused.
 - Space, the game's pause key, does nothing while photo cam is on (the fly camera mode), so the world stays still.
+
+## 2026-10-15: W, A, S and D as photo cam's actions (DAOLib #130)
+
+DAOLib master `4b4ff22`, debug, the same save, real keys.
+
+- `KeyBindings.ini` has `PhotoCamForward_0=Keyboard::Button_W` (and Back S, Left A, Right D) beside the game's `RunCharacterForward_0=Keyboard::Button_W`: both keep W.
+- F8, then W held a second: the view flew 4.0 m along the view, and Lyna did not move.
+- F8 off, then W held a second: Lyna walked (0.9 m from Tamlen before, 2.0 m after).

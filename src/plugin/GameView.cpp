@@ -9,6 +9,8 @@
 #include <cstdint>
 #include <numbers>
 #include <optional>
+#include <string>
+#include <string_view>
 
 namespace photocam::game
 {
@@ -25,6 +27,15 @@ constexpr float kFallbackFov = 60.0f;
 // party's walking, the camera's turning (the right mouse's orbit among it), its zoom and its pan.
 constexpr std::uint32_t kFlying =
     dao::input::kMovement | dao::input::kCameraTurn | dao::input::kCameraZoom | dao::input::kCameraPan;
+
+// Photo cam's key map: the flight's actions answer their keys while it is on, and the game's
+// actions on the same keys do not (dao/Input.h, DAOLib #130). The user, 2026-10-15: the keys
+// read from the device until DAOLib let them share the game's, then rebindable actions.
+constexpr std::wstring_view kKeymap = L"PhotoCam";
+constexpr std::wstring_view kForward = L"PhotoCamForward";
+constexpr std::wstring_view kBack = L"PhotoCamBack";
+constexpr std::wstring_view kLeft = L"PhotoCamLeft";
+constexpr std::wstring_view kRight = L"PhotoCamRight";
 
 // The field of view last held, so it is set on a change and not every frame.
 std::optional<float> g_heldFov;
@@ -129,9 +140,42 @@ void Release()
     g_heldFov.reset();
 }
 
+bool RegisterMoves()
+{
+    struct Move
+    {
+        std::wstring_view name;
+        const wchar_t *label;
+        dao::input::Key key;
+    };
+    using dao::input::Key;
+    for (const Move &move : {Move{kForward, L"Photo camera forward", Key::W}, Move{kBack, L"Photo camera back", Key::S},
+                             Move{kLeft, L"Photo camera left", Key::A}, Move{kRight, L"Photo camera right", Key::D}})
+    {
+        // Held, not pressed: the callback has nothing to do, and DAOLib asks for one.
+        if (!dao::input::RegisterAction(
+                {
+                    .name = std::wstring(move.name),
+                    .label = move.label,
+                    .key = move.key,
+                    .modes = {dao::GameMode::FlyCam},
+                    .section = L"Photo Camera",
+                    .keymap = std::wstring(kKeymap),
+                },
+                [] {}))
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+// The mouse and the wheel stay read from the device: an action's binding to a mouse button
+// does not count for Held, and the wheel is no key (dao/Input.h).
 FlyInput ReadInput(float seconds)
 {
     using dao::input::Down;
+    using dao::input::Held;
     using dao::input::Key;
     const auto mouse = dao::input::MouseDelta();
     FlyInput input;
@@ -139,10 +183,10 @@ FlyInput ReadInput(float seconds)
     input.look = Down(dao::input::MouseButton::Right);
     input.mouseX = static_cast<float>(mouse.x);
     input.mouseY = static_cast<float>(mouse.y);
-    input.forward = Down(Key::W);
-    input.back = Down(Key::S);
-    input.left = Down(Key::A);
-    input.right = Down(Key::D);
+    input.forward = Held(kForward);
+    input.back = Held(kBack);
+    input.left = Held(kLeft);
+    input.right = Held(kRight);
     input.wheel = dao::input::WheelNotches();
     input.shift = Down(Key::LeftShift) || Down(Key::RightShift);
     return input;
@@ -151,6 +195,7 @@ FlyInput ReadInput(float seconds)
 void Withhold(bool withheld)
 {
     dao::input::Withhold(withheld ? kFlying : 0);
+    dao::input::SetKeymap(kKeymap, withheld);
 }
 
 } // namespace photocam::game

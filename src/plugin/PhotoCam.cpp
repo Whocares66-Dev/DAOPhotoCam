@@ -155,8 +155,9 @@ extern "C" __declspec(dllexport) bool __cdecl DAOLib_Load(const dao::LoaderInfo 
         spdlog::error("photo cam: not loaded, not the loader or the game this was built for");
         return false;
     }
-    // Both keys under a heading of their own in the controls screen, where the player rebinds
-    // them; F7 and F8 are bound to nothing of the game's. While photo cam is on the game is in its
+    // The keys under a heading of their own in the controls screen, where the player rebinds
+    // them; F7 and F8 are bound to nothing of the game's, and the flight's W, A, S and D are in
+    // photo cam's key map (game::RegisterMoves). While photo cam is on the game is in its
     // fly camera mode, where an action's key works only if the action names the mode (dao/Input.h;
     // seen 2026-10-15: F7 did nothing there): the toggle works in it and where photo cam starts,
     // the lock only in it.
@@ -177,13 +178,15 @@ extern "C" __declspec(dllexport) bool __cdecl DAOLib_Load(const dao::LoaderInfo 
                                     .modes = {dao::GameMode::FlyCam},
                                     .section = L"Photo Camera",
                                 },
-                                [] { Lock("key"); });
+                                [] { Lock("key"); }) &&
+                            photocam::game::RegisterMoves();
     if (!registered)
     {
         spdlog::error("photo cam: the keys were not registered");
         return false;
     }
     dao::OnFrame(Frame);
-    spdlog::info("photo cam: loaded, on and off by F8, locked by F7, unless rebound in the controls screen");
+    spdlog::info("photo cam: loaded, on and off by F8, locked by F7, flown by W, A, S and D, unless rebound in the "
+                 "controls screen");
     return true;
 }
