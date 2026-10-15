@@ -35,7 +35,7 @@ var SLIDER = 350; // the slider's width, its arrows in
 var WIDTH = PAD + ARROW + SLIDER - ARROW + PAD + 12;
 var FOV_STEP = 5; // as a notch of the wheel moves them (src/core/FlyCamera.h)
 var SPEED_STEP = 1.25;
-var SMALL_WIDTH = 210; // the panel made small: its title and the button that brings it back
+var SMALL_WIDTH = 190; // the panel made small: its title and the button that brings it back
 var SMALL_HEIGHT = 64;
 var SQUARE = 22;
 var TITLE_MIDDLE = 13; // the title row's middle, below its top
@@ -78,7 +78,8 @@ function tooltipBox(clip, w, h)
     roundedBox(clip, BOX_INSET, BOX_INSET, w - 2 * BOX_INSET, h - 2 * BOX_INSET, BOX_RADIUS, 0x000000, 80);
 }
 
-// The title, its letters' middle at `middle`: a text field has 2 pixels of gutter above its line.
+// The title, centred across `w` (the user, 2026-10-15: "we can center the title, 'Photo Cam'"), its
+// letters' middle at `middle`: a text field has 2 pixels of gutter above its line.
 function title(clip, x, middle, w, text)
 {
     clip.createTextField("title", 1, x, 0, w, 26);
@@ -87,6 +88,7 @@ function title(clip, x, middle, w, text)
     format.font = "$TitleFont";
     format.size = 18;
     format.color = TITLE;
+    format.align = "center";
     field.embedFonts = true;
     field.selectable = false;
     field.setNewTextFormat(format);
@@ -462,7 +464,7 @@ function build()
 {
     var panel = _root.createEmptyMovieClip("panel", 10);
     var y = PAD - 2;
-    title(panel, PAD, y + TITLE_MIDDLE, WIDTH - 2 * PAD, "Photo Camera");
+    title(panel, PAD, y + TITLE_MIDDLE, WIDTH - 2 * PAD, "Photo Cam");
     // The user, 2026-10-15: "a top right button to minimize the ui, retaining only a small box w/ a
     // maximize button".
     squareButton(panel, "minimize", 60, false, WIDTH - PAD + 4, y + TITLE_MIDDLE, function()
@@ -489,7 +491,8 @@ function build()
     panel.boxWidth = WIDTH;
 
     var small = _root.createEmptyMovieClip("small", 11);
-    title(small, PAD, SMALL_HEIGHT / 2, SMALL_WIDTH - 2 * PAD, "Photo Camera");
+    // Centred in what the square leaves of the small box.
+    title(small, PAD, SMALL_HEIGHT / 2, SMALL_WIDTH - 2 * PAD - SQUARE, "Photo Cam");
     squareButton(small, "maximize", 60, true, SMALL_WIDTH - PAD + 4, SMALL_HEIGHT / 2, function()
     {
         showSmall(false);

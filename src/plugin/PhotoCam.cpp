@@ -180,7 +180,7 @@ extern "C" __declspec(dllexport) bool __cdecl DAOLib_Load(const dao::LoaderInfo 
                                     .label = L"On / off",
                                     .key = dao::input::Key::F8,
                                     .modes = {dao::GameMode::Explore, dao::GameMode::Combat, dao::GameMode::FlyCam},
-                                    .section = L"Photo Camera",
+                                    .section = L"Photo Cam",
                                 },
                                 [] { Toggle("key"); }) &&
                             dao::input::RegisterAction(
@@ -189,7 +189,7 @@ extern "C" __declspec(dllexport) bool __cdecl DAOLib_Load(const dao::LoaderInfo 
                                     .label = L"Lock camera",
                                     .key = dao::input::Key::F7,
                                     .modes = {dao::GameMode::FlyCam},
-                                    .section = L"Photo Camera",
+                                    .section = L"Photo Cam",
                                 },
                                 [] { Lock("key"); }) &&
                             dao::input::RegisterAction(
@@ -198,7 +198,7 @@ extern "C" __declspec(dllexport) bool __cdecl DAOLib_Load(const dao::LoaderInfo 
                                     .label = L"Exit",
                                     .key = dao::input::Key::Escape,
                                     .modes = {dao::GameMode::FlyCam},
-                                    .section = L"Photo Camera",
+                                    .section = L"Photo Cam",
                                     .keymap = std::wstring(photocam::game::kKeymap),
                                 },
                                 [] {

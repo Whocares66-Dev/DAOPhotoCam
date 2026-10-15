@@ -177,7 +177,7 @@ bool RegisterMoves()
                     .label = move.label,
                     .key = move.key,
                     .modes = {dao::GameMode::FlyCam},
-                    .section = L"Photo Camera",
+                    .section = L"Photo Cam",
                     .keymap = std::wstring(kKeymap),
                 },
                 [] {}))

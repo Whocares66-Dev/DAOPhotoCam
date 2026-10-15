@@ -22,7 +22,7 @@ A gold camera in the game's top bar, before Options, turns it on. In the screen'
 | Wheel up / down | Faster / slower (0.5 to 40 m/s) |
 | Shift + wheel up / down | Narrower / wider field of view (15 to 120 degrees, top to bottom) |
 
-Every key but the mouse's and the wheel is rebound in the options screen's Controls tab, under "Photo Camera". Esc and W, A, S, D, Q, E are photo cam's own while it is on: the game keeps its own use of those keys otherwise.
+Every key but the mouse's and the wheel is rebound in the options screen's Controls tab, under "Photo Cam". Esc and W, A, S, D, Q, E are photo cam's own while it is on: the game keeps its own use of those keys otherwise.
 
 ## For agents
 
