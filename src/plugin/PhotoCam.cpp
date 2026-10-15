@@ -13,6 +13,7 @@
 #include "core/Tools.h"
 #include "plugin/Eluvian.h"
 #include "plugin/GameView.h"
+#include "plugin/Panel.h"
 
 #include "dao/Frame.h"
 #include "dao/GameModes.h"
@@ -33,6 +34,11 @@ namespace
 
 constexpr std::wstring_view kToggleAction = L"PhotoCamToggle";
 constexpr std::wstring_view kLockAction = L"PhotoCamLock";
+// Esc ends photo cam too, for a player who forgets its key (the user, 2026-10-15): in photo cam's
+// key map, so while it is on Esc does not open the game's menu, and otherwise does.
+constexpr std::wstring_view kExitAction = L"PhotoCamExit";
+// H shows the game's interface over the free view, or hides it (the user, 2026-10-15).
+constexpr std::wstring_view kInterfaceAction = L"PhotoCamInterface";
 
 Session g_session;
 std::chrono::steady_clock::time_point g_lastFrame;
@@ -43,12 +49,14 @@ void GiveBack(std::string_view by)
     game::Withhold(false);
     game::Release();
     game::Thaw();
+    panel::Show(false);
     eluvian::Emit(tools::kStopped, tools::StoppedJson(by));
 }
 
 void Frame()
 {
     eluvian::Find();
+    panel::Frame();
     FlyCamera *fly = g_session.Fly();
     if (fly == nullptr)
     {
@@ -57,9 +65,15 @@ void Frame()
     const auto now = std::chrono::steady_clock::now();
     const float seconds = std::chrono::duration<float>(now - g_lastFrame).count();
     g_lastFrame = now;
-    if (!g_session.IsLocked())
+    if (g_session.IsLocked())
     {
-        fly->Step(game::ReadInput(seconds));
+        game::HoldCursor(false);
+    }
+    else
+    {
+        const FlyInput input = game::ReadInput(seconds);
+        game::HoldCursor(input.look);
+        fly->Step(input);
     }
     DrawNow();
 }
@@ -121,6 +135,7 @@ std::optional<Toggled> Toggle(std::string_view by)
     {
         g_lastFrame = std::chrono::steady_clock::now();
         game::Withhold(true);
+        panel::Show(true);
         eluvian::Emit(tools::kStarted, tools::StartedJson(*g_session.Fly(), by));
     }
     else if (toggled == Toggled::Stopped)
@@ -164,7 +179,7 @@ extern "C" __declspec(dllexport) bool __cdecl DAOLib_Load(const dao::LoaderInfo 
     const bool registered = dao::input::RegisterAction(
                                 {
                                     .name = std::wstring(kToggleAction),
-                                    .label = L"Photo camera on/off",
+                                    .label = L"On / off",
                                     .key = dao::input::Key::F8,
                                     .modes = {dao::GameMode::Explore, dao::GameMode::Combat, dao::GameMode::FlyCam},
                                     .section = L"Photo Camera",
@@ -173,18 +188,49 @@ extern "C" __declspec(dllexport) bool __cdecl DAOLib_Load(const dao::LoaderInfo 
                             dao::input::RegisterAction(
                                 {
                                     .name = std::wstring(kLockAction),
-                                    .label = L"Lock photo camera",
+                                    .label = L"Lock camera",
                                     .key = dao::input::Key::F7,
                                     .modes = {dao::GameMode::FlyCam},
                                     .section = L"Photo Camera",
                                 },
                                 [] { Lock("key"); }) &&
+                            dao::input::RegisterAction(
+                                {
+                                    .name = std::wstring(kExitAction),
+                                    .label = L"Exit",
+                                    .key = dao::input::Key::Escape,
+                                    .modes = {dao::GameMode::FlyCam},
+                                    .section = L"Photo Camera",
+                                    .keymap = std::wstring(photocam::game::kKeymap),
+                                },
+                                [] {
+                                    if (State().Active())
+                                    {
+                                        Toggle("key");
+                                    }
+                                }) &&
+                            dao::input::RegisterAction(
+                                {
+                                    .name = std::wstring(kInterfaceAction),
+                                    .label = L"Show game interface",
+                                    .key = dao::input::Key::H,
+                                    .modes = {dao::GameMode::FlyCam},
+                                    .section = L"Photo Camera",
+                                    .keymap = std::wstring(photocam::game::kKeymap),
+                                },
+                                [] {
+                                    if (State().Active())
+                                    {
+                                        photocam::panel::ShowInterface(!photocam::panel::InterfaceShown());
+                                    }
+                                }) &&
                             photocam::game::RegisterMoves();
     if (!registered)
     {
         spdlog::error("photo cam: the keys were not registered");
         return false;
     }
+    photocam::panel::Register();
     dao::OnFrame(Frame);
     spdlog::info("photo cam: loaded, on and off by F8, locked by F7, flown by W, A, S and D, unless rebound in the "
                  "controls screen");

@@ -83,6 +83,13 @@ $built = Join-Path $repo "build\$Preset\daolib\plugins\photocam"
 if (-not (Test-Path (Join-Path $built 'photocam.dll'))) {
     throw "No photocam.dll in $built; run .\tools\build.ps1 -Preset $Preset first"
 }
+# The movies are built outside CMake (tools\movie.py) and copied beside the dll by the build; without
+# them photo cam has no panel and no camera in the top bar.
+foreach ($movie in 'photocam.swf', 'photocam_navbar.swf') {
+    if (-not (Test-Path (Join-Path $built $movie))) {
+        Show-Line "no $movie in $built`: run python tools\movie.py, then build again" -Colour Yellow
+    }
+}
 if (-not (Test-Path (Join-Path $Game 'dinput8.dll'))) {
     Show-Line "no dinput8.dll beside DAOrigins.exe: DAOLib's loader is not installed, and nothing loads the plugin" -Colour Yellow
 }
