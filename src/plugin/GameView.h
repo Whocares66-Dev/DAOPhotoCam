@@ -44,7 +44,7 @@ void Freeze();
 void Thaw();
 
 // Registers the flight's keys as actions the player rebinds under "Photo Camera": forward, back,
-// left and right, W, S, A and D by default, in photo cam's own key map, so they share their keys
+// left, right, up and down, W, S, A, D, Q and E by default, in photo cam's own key map, so they share their keys
 // with the game's walking. Call from DAOLib_Load.
 // @return false if DAOLib refused one
 bool RegisterMoves();

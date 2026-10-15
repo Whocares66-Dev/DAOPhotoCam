@@ -36,6 +36,8 @@ constexpr std::wstring_view kForward = L"PhotoCamForward";
 constexpr std::wstring_view kBack = L"PhotoCamBack";
 constexpr std::wstring_view kLeft = L"PhotoCamLeft";
 constexpr std::wstring_view kRight = L"PhotoCamRight";
+constexpr std::wstring_view kUp = L"PhotoCamUp";
+constexpr std::wstring_view kDown = L"PhotoCamDown";
 
 // The field of view last held, so it is set on a change and not every frame.
 std::optional<float> g_heldFov;
@@ -150,7 +152,8 @@ bool RegisterMoves()
     };
     using dao::input::Key;
     for (const Move &move : {Move{kForward, L"Photo camera forward", Key::W}, Move{kBack, L"Photo camera back", Key::S},
-                             Move{kLeft, L"Photo camera left", Key::A}, Move{kRight, L"Photo camera right", Key::D}})
+                             Move{kLeft, L"Photo camera left", Key::A}, Move{kRight, L"Photo camera right", Key::D},
+                             Move{kUp, L"Photo camera up", Key::Q}, Move{kDown, L"Photo camera down", Key::E}})
     {
         // Held, not pressed: the callback has nothing to do, and DAOLib asks for one.
         if (!dao::input::RegisterAction(
@@ -187,6 +190,8 @@ FlyInput ReadInput(float seconds)
     input.back = Held(kBack);
     input.left = Held(kLeft);
     input.right = Held(kRight);
+    input.up = Held(kUp);
+    input.down = Held(kDown);
     input.wheel = dao::input::WheelNotches();
     input.shift = Down(Key::LeftShift) || Down(Key::RightShift);
     return input;

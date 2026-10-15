@@ -72,6 +72,30 @@ TEST_CASE("A and D move level to the side: looking along +x, right is -y", "[fly
     CHECK(fly.Current().eye.y == Approx(0.0f).margin(1e-6));
 }
 
+TEST_CASE("Q and E move straight up and down, whichever way the view looks", "[fly]")
+{
+    FlyCamera fly(Pose{{}, 1.0f, -kPi / 3.0f}, 60.0f, 4.0f);
+    auto input = Second();
+    input.up = true;
+    fly.Step(input);
+    CHECK(fly.Current().eye.z == Approx(0.2f));
+    CHECK(fly.Current().eye.x == Approx(0.0f).margin(1e-6));
+    CHECK(fly.Current().eye.y == Approx(0.0f).margin(1e-6));
+
+    input.up = false;
+    input.down = true;
+    fly.Step(input);
+    CHECK(fly.Current().eye.z == Approx(0.0f).margin(1e-6));
+
+    // With A, up and to the side together no faster than either alone.
+    input.down = false;
+    input.up = true;
+    input.left = true;
+    fly.Step(input);
+    const photocam::Vec3 &eye = fly.Current().eye;
+    CHECK(std::sqrt((eye.x * eye.x) + (eye.y * eye.y) + (eye.z * eye.z)) == Approx(0.2f));
+}
+
 TEST_CASE("Diagonals are no faster than straight on; opposite keys cancel", "[fly]")
 {
     auto fly = Level(4.0f);

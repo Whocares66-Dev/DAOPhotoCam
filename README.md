@@ -15,10 +15,11 @@ While the photo camera is on the world is paused, in a fight too, so nothing cha
 | Right mouse button held, mouse | Look around |
 | W / S | Fly forward / back, the way the view looks |
 | A / D | Fly left / right |
+| Q / E | Fly straight up / down |
 | Wheel up / down | Faster / slower (0.5 to 40 m/s) |
 | Shift + wheel up / down | Narrower / wider field of view (30 to 150 degrees) |
 
-F7, F8 and W, A, S, D are rebound in the options screen's Controls tab, under "Photo Camera". Photo cam's W, A, S and D are its own: the game keeps W, A, S and D for walking, and they fly the camera only while it is on.
+F7, F8 and W, A, S, D, Q, E are rebound in the options screen's Controls tab, under "Photo Camera". Photo cam's W, A, S, D, Q and E are its own: the game keeps its own use of those keys, and they fly the camera only while photo cam is on.
 
 ## For agents
 

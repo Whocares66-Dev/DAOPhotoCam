@@ -95,15 +95,22 @@ void FlyCamera::Move(const FlyInput &input)
 {
     const float along = static_cast<float>(input.forward) - static_cast<float>(input.back);
     const float side = static_cast<float>(input.right) - static_cast<float>(input.left);
-    if ((along == 0.0f && side == 0.0f) || input.seconds <= 0.0f)
+    const float rise = static_cast<float>(input.up) - static_cast<float>(input.down);
+    if ((along == 0.0f && side == 0.0f && rise == 0.0f) || input.seconds <= 0.0f)
     {
         return;
     }
     const Vec3 forward = Forward(m_pose);
     const Vec3 right = Right(m_pose);
-    const Vec3 way{(forward.x * along) + (right.x * side), (forward.y * along) + (right.y * side), forward.z * along};
-    // Diagonally no faster than straight on.
+    // Q and E straight up and down, whichever way the view looks.
+    const Vec3 way{(forward.x * along) + (right.x * side), (forward.y * along) + (right.y * side),
+                   (forward.z * along) + rise};
     const float length = std::sqrt((way.x * way.x) + (way.y * way.y) + (way.z * way.z));
+    if (length == 0.0f)
+    {
+        return; // W and Q looking straight down cancel; nothing to move along
+    }
+    // Diagonally no faster than straight on.
     const float step = m_speed * std::min(input.seconds, m_limits.maxSeconds) / length;
     m_pose.eye.x += way.x * step;
     m_pose.eye.y += way.y * step;

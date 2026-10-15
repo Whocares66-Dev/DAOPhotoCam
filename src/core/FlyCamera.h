@@ -41,6 +41,8 @@ struct FlyInput
     bool back = false;    // S
     bool left = false;    // A
     bool right = false;   // D
+    bool up = false;      // Q
+    bool down = false;    // E
     int wheel = 0;        // wheel notches since the last frame, away from the player positive
     bool shift = false;   // Shift held: the wheel changes the field of view, not the speed
 };
@@ -71,7 +73,7 @@ class FlyCamera
     // The wheel changes the speed, or with Shift the field of view (away from the player
     // narrows it, as a lens zooms in). With the right mouse button held the mouse turns the
     // view. W and S move along the way the view looks, up or down as it looks; A and D move
-    // level to the side.
+    // level to the side; Q and E straight up and down.
     void Step(const FlyInput &input);
 
     // Puts the view at a pose at once, the pitch within its limits.
