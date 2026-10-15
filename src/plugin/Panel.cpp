@@ -21,6 +21,13 @@ namespace
 
 constexpr std::wstring_view kScreen = L"PhotoCamPanel";
 constexpr std::wstring_view kMovie = L"photocam";
+// The camera's button, loaded into the top bar's own movie (ui/navbar).
+constexpr std::wstring_view kBarMovie = L"NavBar"; // the record's name, as dao::gui::NameOf gives it
+constexpr std::wstring_view kBarButton = L"photocam_navbar";
+constexpr const char *kBarClip = "PhotoCamNav_mc";
+// How often the bar is looked at for the button: LoadInto answers at once where it is there.
+constexpr int kBarEvery = 30;
+int g_barTick = 0;
 
 bool g_added = false;
 bool g_shown = false;
@@ -97,6 +104,32 @@ void SetSpeed(const dao::gui::Call &call)
     }
 }
 
+// The camera's button in the top bar: photo cam on, or off, as its key.
+void BarToggle(const dao::gui::Call & /*call*/)
+{
+    plugin::Toggle("bar");
+}
+
+// Loads the camera's button into the top bar's movie, while there is one; the bar's movie is made
+// again on a load, and its clip with it, so it is looked at every so often.
+void Bar()
+{
+    if (++g_barTick % kBarEvery != 0)
+    {
+        return;
+    }
+    void *owner = dao::gui::FindOwner(kBarMovie);
+    if (owner == nullptr)
+    {
+        return;
+    }
+    dao::gui::Movie movie{dao::gui::MovieOf(owner)};
+    if (movie && !dao::gui::LoadInto(movie, kBarClip, kBarButton))
+    {
+        spdlog::warn("photo cam: the top bar's camera button could not be loaded");
+    }
+}
+
 void Exit(const dao::gui::Call & /*call*/)
 {
     if (plugin::State().Active())
@@ -120,6 +153,7 @@ void Register()
     dao::gui::OnExternalInterface("PhotoCam_SetFov", &SetFov);
     dao::gui::OnExternalInterface("PhotoCam_SetSpeed", &SetSpeed);
     dao::gui::OnExternalInterface("PhotoCam_Exit", &Exit);
+    dao::gui::OnExternalInterface("PhotoCam_Toggle", &BarToggle);
     dao::gui::OnExternalInterface("PhotoCam_Log", &Log);
     // Out of the game's screenshots (the user, 2026-10-15: "this ui shouldn't show up in
     // screenshots"): DAOLib #133 holds the capture two frames after `before`, which hides it.
@@ -140,6 +174,7 @@ void Register()
 
 void Frame()
 {
+    Bar();
     if (g_added)
     {
         if (g_shown)
