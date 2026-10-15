@@ -1,13 +1,13 @@
 ---
-title: The panel
+title: UI panel
 nav_order: 3
 ---
 
-# The panel
+# UI panel
 
 While Photo Cam is on, a panel stands in the screen's bottom right, made of the game's own controls.
 
-![The panel]({{ "/assets/img/panel.png" | relative_url }}){: .ui width="400" loading="lazy"}
+![The UI panel]({{ "/assets/img/panel.png" | relative_url }}){: .ui width="400" loading="lazy"}
 
 | | |
 |---|---|
