@@ -76,3 +76,11 @@ Branch `photocam-panel`, on a local merge of DAOLib's branches for #132 (the cur
 - The top bar's camera: before Options, the bar's art one place wider; loaded into the bar's movie (record `NavBar`) once each movie; its tooltip "Photo Cam (F8)" (first "Photo Camera"); a click toggles photo cam; back at once with the bar as photo cam ends (the user: "they all work").
 - Esc ends photo cam (it takes the game's ToggleMainMenu while photo cam's key map is on); Q and E fly up and down; the pointer is hidden while the right button looks (the user).
 - Opening and closing play the inventory's sounds.
+
+## 2026-10-15: Capture, the Esc menu's buttons, "Photo Cam"
+
+Branch `photocam-capture` on DAOLib master `79422e5`.
+
+- Capture and Exit as the Esc menu's buttons, a third taller, their labels whole at 15 pixels; "Photo Cam" centred as the panel's title, the controls screen's heading and the top bar's tooltip.
+- The user's click on Capture: `photocam.log` "a screenshot taken from the panel" at 12:51:16, and `Screenshots\User\Screenshot20261015125116677.jpg`, 1600 x 1000, with neither the panel nor the HUD.
+- Show interface and H taken out (the user): the portraits and the minimap, fed only in explore, came back dim and black.
