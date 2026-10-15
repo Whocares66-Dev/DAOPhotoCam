@@ -252,21 +252,24 @@ std::string StateDescriptor()
 
 std::string ToggleDescriptor()
 {
-    return Json{{"description",
-                 std::string("Turns photo cam, the free camera, on or off, as its key does (F8 by default). It starts "
-                             "from the game's camera in the close view, in explore or combat mode, and not in the "
-                             "tactical view; off gives the game back its camera where it was. It ends by itself when "
-                             "the game leaves the fly camera mode (a menu, a conversation, a load, or a script of the "
-                             "game's in a fight). Answers photo cam's state. photocam.started and photocam.stopped "
-                             "follow; place the view with photocam_pose or photocam_move.") +
-                     kWhileOn},
-                {"inputSchema",
-                 {{"type", "object"},
-                  {"properties",
-                   {{"on",
-                     {{"type", "boolean"},
-                      {"description", "true to turn it on, false off; left out, it flips. Already so is no "
-                                      "error."}}}}}}}}
+    return Json{
+        {"description",
+         std::string(
+             "Turns photo cam, the free camera, on or off, as its key does (F8 by default). It starts "
+             "from the game's camera in the close view, in explore or combat mode, and not in the "
+             "tactical view. The world is paused while it is on, so nothing moves in the shot and no fight "
+             "starts; off gives the game back its camera where it was and its pause as it was. It ends by itself when "
+             "the game leaves the fly camera mode (a menu, a conversation, a load, or a script of the "
+             "game's in a fight). Answers photo cam's state. photocam.started and photocam.stopped "
+             "follow; place the view with photocam_pose or photocam_move.") +
+             kWhileOn},
+        {"inputSchema",
+         {{"type", "object"},
+          {"properties",
+           {{"on",
+             {{"type", "boolean"},
+              {"description", "true to turn it on, false off; left out, it flips. Already so is no "
+                              "error."}}}}}}}}
         .dump();
 }
 
@@ -274,8 +277,8 @@ std::string LockDescriptor()
 {
     return Json{{"description",
                  "Locks photo cam's view where it is, as its key does (F7 by default): the view, speed and field of "
-                 "view hold, and the game has its keys and mouse back, so the party can be moved into the shot. "
-                 "photocam_pose still places a locked view. Only while photo cam is on. Answers photo cam's state; "
+                 "view hold against the keys and mouse. photocam_pose and photocam_move still place a locked "
+                 "view. Only while photo cam is on. Answers photo cam's state; "
                  "photocam.locked follows."},
                 {"inputSchema",
                  {{"type", "object"},

@@ -47,3 +47,12 @@ DAOLib `gh-125-free-view` `db4588f`, debug, the same save. While the user was aw
 - `photocam_pose {lookAt: "0x10d", distance: 3, facingDegrees: 90, pitchDegrees: -10}` put the eye 3 m on Tamlen's +x side; `screen` put him at x 800 of 1600, his chest about the middle. `photocam_move {forward: 1, right: 1, up: 0.5}` moved the eye exactly so (along -x 10 degrees down, toward +y, up).
 - Off a frame after on (two tool calls): explore again the frame after. `SetGameMode(GM_EXPLORE)` by Eluvian's script tool while on: photo cam stopped by "mode", the game stayed in explore, the camera given back.
 - Combat: started during a fight with three wolves, photo cam held to the fight's end, the party fighting on; off went fly camera, combat, explore. But a wolf spawned hostile while photo cam was on stood idle for 15 s and the fight began only when photo cam was off: a fight does not start in the fly camera mode. Asked of lib-agent.
+
+## 2026-10-15: the world paused while photo cam is on
+
+The same branch and save. The user: "the whole world should probably pause so things don't change what the user is looking for the best screenshot".
+
+- Two wolves spawned hostile, the fight begun; photo cam on: the game paused in the fly camera mode, a wolf held mid-leap at Lyna. Flown round it with `photocam_pose {lookAt: "0x82", distance: 3.5, facingDegrees: 0}` and real S held (2.07 m back while paused): the wolves kept their poses and every creature its health.
+- Off: the game went back to combat unpaused, and the fight went on (Tamlen killed a wolf).
+- Paused first by Eluvian's `pause`, then photo cam on and off: back in combat and still paused.
+- Space, the game's pause key, does nothing while photo cam is on (the fly camera mode), so the world stays still.

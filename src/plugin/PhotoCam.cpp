@@ -1,9 +1,9 @@
 // photocam.dll: a free camera for screenshots. A key of the player's choosing, listed under its
 // own heading in the controls screen, takes the camera off the party in the close view; the
 // right mouse button held turns it, W A S D fly it, the wheel sets the speed and Shift with the
-// wheel the field of view. The key again gives the game its camera back where it was. A second
-// key locks the view where it is and gives the game its keys and mouse back, so the party can be
-// walked into the shot; pressed again, the view flies again.
+// wheel the field of view. The world is paused while it is on, so nothing changes in the shot. The
+// key again gives the game its camera back where it was, and its pause as it was. A second key
+// locks the view where it is; pressed again, the view flies again.
 //
 // What is decided (the flight, when it may start) is src/core/'s and tested; what is done to the
 // game is plugin/GameView's; Eluvian's tools are plugin/Eluvian's. This file joins them: the keys,
@@ -37,11 +37,12 @@ constexpr std::wstring_view kLockAction = L"PhotoCamLock";
 Session g_session;
 std::chrono::steady_clock::time_point g_lastFrame;
 
-// Gives the game back its camera and input, after the session has ended.
+// Gives the game back its camera, its input and its pause, after the session has ended.
 void GiveBack(std::string_view by)
 {
     game::Withhold(false);
     game::Release();
+    game::Thaw();
     eluvian::Emit(tools::kStopped, tools::StoppedJson(by));
 }
 
@@ -101,11 +102,19 @@ std::optional<Toggled> Toggle(std::string_view by)
     }
     const bool wasActive = g_session.Active();
     auto toggled = g_session.Toggle(wasActive ? GameCamera{} : game::Camera());
-    // The game may still refuse its fly camera's mode; then photo cam has not started.
-    if (toggled == Toggled::Started && !game::Draw(g_session.Fly()->Current(), g_session.Fly()->FovDegrees()))
+    // The world holds still while photo cam is on, so nothing changes in the shot being looked
+    // for (the user, 2026-10-15): paused before the fly camera's mode, as the engine's pause is
+    // made for the modes before it. The game may still refuse that mode; then photo cam has not
+    // started.
+    if (toggled == Toggled::Started)
     {
-        g_session.End();
-        toggled = Toggled::NoCamera;
+        game::Freeze();
+        if (!game::Draw(g_session.Fly()->Current(), g_session.Fly()->FovDegrees()))
+        {
+            game::Thaw();
+            g_session.End();
+            toggled = Toggled::NoCamera;
+        }
     }
     spdlog::info("photo cam: {} by the {}", Name(toggled), by);
     if (toggled == Toggled::Started)
@@ -129,8 +138,8 @@ Locked Lock(std::string_view by)
     {
         return locked;
     }
-    // Locked, the view takes no input, so the game has its own back.
-    game::Withhold(locked == Locked::Unlocked);
+    // Locked, the view only holds still: the world is paused, so the game's keys and mouse would
+    // move nothing, and they stay withheld.
     eluvian::Emit(tools::kLocked, tools::LockedJson(locked == Locked::Locked, by));
     return locked;
 }

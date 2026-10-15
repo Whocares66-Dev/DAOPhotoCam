@@ -35,7 +35,7 @@ std::string_view Name(Toggled toggled);
 // What a press of the lock key did.
 enum class Locked
 {
-    Locked,   // the view holds still; the game has its keys and mouse back
+    Locked,   // the view holds still against the keys and mouse
     Unlocked, // the view flies again
     Off,      // nothing: photo cam is off
 };

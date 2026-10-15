@@ -2,14 +2,16 @@
 
 A free camera for screenshots in Dragon Age: Origins, a [DAOLib](https://github.com/Whocares66-Dev/DAOLib) plugin.
 
-**Not yet released:** it needs DAOLib's free view (DAOLib #125), not yet on DAOLib's master. In a fight already under way it works; a fight does not start while it is on, and while locked the party does not take orders yet.
+**Not yet released:** it needs DAOLib's free view (DAOLib #125), not yet on DAOLib's master.
+
+While the photo camera is on the world is paused, in a fight too, so nothing changes in the shot. Off, the game carries on as it was.
 
 ## Controls
 
 | Key | Does |
 |---|---|
 | F8 | Photo camera on and off. Starts from the close (over-the-shoulder) view, not the tactical view; off puts the camera back where it was |
-| F7 | Lock the photo camera where it is: the view holds, and the party can be moved into the shot. Again to unlock |
+| F7 | Lock the photo camera where it is: the view holds against the keys and mouse. Again to unlock |
 | Right mouse button held, mouse | Look around |
 | W / S | Fly forward / back, the way the view looks |
 | A / D | Fly left / right |

@@ -36,6 +36,13 @@ std::optional<Vec3> PositionOf(std::uint32_t id);
 // Gives the game back its own camera and field of view, as they were before Draw.
 void Release();
 
+// Pauses the world, so nothing moves in the shot, and remembers whether the game was paused
+// already. Call before the first Draw, while the game is still exploring or fighting.
+void Freeze();
+
+// Gives the game back the pause Freeze found. Call after Release.
+void Thaw();
+
 // The player's input since the last call, for the flight. Call once a frame on the game thread.
 FlyInput ReadInput(float seconds);
 

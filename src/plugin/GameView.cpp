@@ -1,6 +1,7 @@
 #include "plugin/GameView.h"
 
 #include "dao/Camera.h"
+#include "dao/ClientExoApp.h"
 #include "dao/Input.h"
 #include "dao/generated/ScriptApi.h"
 
@@ -27,6 +28,9 @@ constexpr std::uint32_t kFlying =
 
 // The field of view last held, so it is set on a change and not every frame.
 std::optional<float> g_heldFov;
+
+// Whether the game was paused when photo cam paused it, while photo cam is on.
+std::optional<bool> g_pausedBefore;
 
 // The game's fly camera (dao/Camera.h, DAOLib #125) measures its yaw from +y, a quarter turn
 // behind the core's heading from +x: seen in play 2026-10-15, the close view looking along +x
@@ -79,6 +83,32 @@ bool Draw(const Pose &pose, float fovDegrees)
         g_heldFov = fovDegrees;
     }
     return true;
+}
+
+// Before the free view, as the engine's SetPaused updates the interface for modes 0 to 5 only
+// (dao/Addresses.h) and the fly camera is mode 6.
+void Freeze()
+{
+    dao::CClientExoApp *app = dao::CClientExoApp::Get();
+    if (app == nullptr)
+    {
+        return;
+    }
+    g_pausedBefore = app->IsPaused();
+    if (!*g_pausedBefore)
+    {
+        app->SetPaused(true);
+    }
+}
+
+void Thaw()
+{
+    dao::CClientExoApp *app = dao::CClientExoApp::Get();
+    if (app != nullptr && g_pausedBefore && !*g_pausedBefore)
+    {
+        app->SetPaused(false);
+    }
+    g_pausedBefore.reset();
 }
 
 // As Eluvian finds a thing's position (eluvian-agent, 2026-10-15): the scripts' GetPosition.
