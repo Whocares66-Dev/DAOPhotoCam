@@ -3,8 +3,8 @@
 // Everything the plugin does to the game goes through here; src/core/ decides what.
 //
 // The free view, the field of view and the input are DAOLib's to give (DAOLib #125, #126, #127,
-// asked 2026-10-15). The field of view and the input are on DAOLib's master; until the free view
-// is, Available() says no and photo cam does not start.
+// asked 2026-10-15). The free view is the game's own fly camera mode, entered and placed by
+// dao::camera::SetFreeView each frame.
 #pragma once
 
 #include "core/FlyCamera.h"
@@ -21,8 +21,15 @@ bool Available();
 GameCamera Camera();
 
 // Draws the scene from a pose with a field of view, until Release. Call every frame on the
-// game thread while photo cam is on.
-void Draw(const Pose &pose, float fovDegrees);
+// game thread while photo cam is on; the first call enters the free view.
+// @return false, with nothing changed, if the game would not enter it (not exploring or fighting)
+bool Draw(const Pose &pose, float fovDegrees);
+
+// Whether the free view is still the game's mode: a menu, a conversation or a load leaves it.
+bool Free();
+
+// Logs the drawn view's forward axis beside the pose's, to check the conversions in play.
+void LogAxes(const Pose &pose);
 
 // Gives the game back its own camera and field of view, as they were before Draw.
 void Release();

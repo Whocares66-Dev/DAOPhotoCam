@@ -1,7 +1,11 @@
 #include "plugin/GameView.h"
 
 #include "dao/Camera.h"
+#include "dao/ClientExoApp.h"
+#include "dao/GameModes.h"
 #include "dao/Input.h"
+
+#include <spdlog/spdlog.h>
 
 #include <cmath>
 #include <cstdint>
@@ -27,54 +31,101 @@ constexpr std::uint32_t kFlying =
 // The field of view last held, so it is set on a change and not every frame.
 std::optional<float> g_heldFov;
 
+// The game changes its mode on a frame after it is asked (seen 2026-10-15: F8's callback ran
+// before the frame's, which still found explore mode), so the free view is given a few frames to
+// become the game's mode before Free() says it has been left.
+constexpr int kFramesToEnter = 10;
+int g_entering = 0;
+
+// The game's fly camera (dao/Camera.h, DAOLib #125) measures its yaw from +y, a quarter turn
+// behind the core's heading from +x: seen in play 2026-10-15, the close view looking along +x
+// read as yaw -90, yaw 0 drew a view along +y and yaw -45 one between them. Its pitch is the
+// core's, up positive (30 drew the sky).
+constexpr float kYawToHeading = kPi / 2.0f;
+
+Pose FromView(const dao::camera::View &view)
+{
+    return {.eye = {view.eye.x, view.eye.y, view.eye.z}, .heading = view.yaw + kYawToHeading, .pitch = view.pitch};
+}
+
+dao::camera::View ToView(const Pose &pose)
+{
+    return {.eye = {pose.eye.x, pose.eye.y, pose.eye.z}, .yaw = pose.heading - kYawToHeading, .pitch = pose.pitch};
+}
+
 } // namespace
 
 bool Available()
 {
-    // DAOLib #125, the free view the scene is drawn from, is not in the submodule yet; the
-    // field of view (#126) and the input (#127) are.
-    return false;
+    return true;
 }
 
-// The game's scene camera keeps its yaw as the direction from the focus to the camera, and
-// its pitch from straight above the pivot (dao/Camera.h). The camera looks back along the
-// first, so the view's heading is the yaw turned half round; and a camera at the pitch p
-// from above looks down by p less a quarter turn: 90 degrees, level, looks along the horizon.
-// To be checked in play against the camera's own view when the free view lands.
 GameCamera Camera()
 {
     GameCamera game;
     dao::CameraController *controller = dao::camera::Current();
-    if (controller == nullptr || controller->Scene() == nullptr)
+    const auto view = dao::camera::CurrentView();
+    if (controller == nullptr || !view)
     {
         return game;
     }
-    const dao::SceneCamera *scene = controller->Scene();
-    const dao::Vector eye = scene->Position();
     game.present = true;
     game.tactical = controller->Tactical();
-    game.view.eye = {eye.x, eye.y, eye.z};
-    game.view.heading = scene->Yaw() + kPi;
-    game.view.pitch = scene->Pitch() - (kPi / 2.0f);
+    game.view = FromView(*view);
     game.fovDegrees = dao::camera::FieldOfView().value_or(kFallbackFov);
     return game;
 }
 
-void Draw(const Pose & /*pose*/, float fovDegrees)
+bool Draw(const Pose &pose, float fovDegrees)
 {
-    // The pose waits on DAOLib #125.
+    const bool entering = !g_heldFov;
+    if (!dao::camera::SetFreeView(ToView(pose)))
+    {
+        return false;
+    }
+    if (entering)
+    {
+        g_entering = kFramesToEnter;
+    }
     if (!g_heldFov || std::abs(*g_heldFov - fovDegrees) > 0.001f)
     {
         dao::camera::SetFieldOfView(fovDegrees);
         g_heldFov = fovDegrees;
     }
+    return true;
+}
+
+bool Free()
+{
+    if (dao::CClientExoApp::CurrentMode() == dao::GameMode::FlyCam)
+    {
+        g_entering = 0;
+        return true;
+    }
+    return g_entering-- > 0;
+}
+
+void LogAxes(const Pose &pose)
+{
+    const auto axes = dao::camera::Axes();
+    if (!axes)
+    {
+        return;
+    }
+    const float level = std::cos(pose.pitch);
+    spdlog::info("photo cam: drawn forward ({:.3f}, {:.3f}, {:.3f}), the pose's ({:.3f}, {:.3f}, {:.3f}), eye ({:.2f}, "
+                 "{:.2f}, {:.2f}), heading {:.1f}, pitch {:.1f}",
+                 axes->forward.x, axes->forward.y, axes->forward.z, level * std::cos(pose.heading),
+                 level * std::sin(pose.heading), std::sin(pose.pitch), pose.eye.x, pose.eye.y, pose.eye.z,
+                 pose.heading * (180.0f / kPi), pose.pitch * (180.0f / kPi));
 }
 
 void Release()
 {
-    // The pose waits on DAOLib #125.
+    dao::camera::SetFreeView(std::nullopt);
     dao::camera::SetFieldOfView(std::nullopt);
     g_heldFov.reset();
+    g_entering = 0;
 }
 
 FlyInput ReadInput(float seconds)

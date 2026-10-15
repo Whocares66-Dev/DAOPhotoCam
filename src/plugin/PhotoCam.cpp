@@ -52,9 +52,9 @@ void Frame()
     {
         return;
     }
-    // A menu, a conversation, a cutscene or a load takes the camera: photo cam ends, and the
-    // game has its own camera back when it returns.
-    if (!game::Camera().present)
+    // A menu, a conversation, a cutscene or a load leaves the free view's mode: photo cam ends,
+    // and the game has its own camera back when it returns.
+    if (!game::Free())
     {
         spdlog::info("photo cam: stopped, the game has left the close view's modes");
         g_session.End();
@@ -91,12 +91,19 @@ std::optional<Toggled> Toggle(std::string_view by)
         return std::nullopt;
     }
     const bool wasActive = g_session.Active();
-    const auto toggled = g_session.Toggle(wasActive ? GameCamera{} : game::Camera());
+    auto toggled = g_session.Toggle(wasActive ? GameCamera{} : game::Camera());
+    // The game may still refuse its fly camera's mode; then photo cam has not started.
+    if (toggled == Toggled::Started && !game::Draw(g_session.Fly()->Current(), g_session.Fly()->FovDegrees()))
+    {
+        g_session.End();
+        toggled = Toggled::NoCamera;
+    }
     spdlog::info("photo cam: {} by the {}", Name(toggled), by);
     if (toggled == Toggled::Started)
     {
         g_lastFrame = std::chrono::steady_clock::now();
         game::Withhold(true);
+        game::LogAxes(g_session.Fly()->Current());
         eluvian::Emit(tools::kStarted, tools::StartedJson(*g_session.Fly(), by));
     }
     else if (toggled == Toggled::Stopped)
@@ -116,6 +123,10 @@ Locked Lock(std::string_view by)
     }
     // Locked, the view takes no input, so the game has its own back.
     game::Withhold(locked == Locked::Unlocked);
+    if (locked == Locked::Locked)
+    {
+        game::LogAxes(g_session.Fly()->Current());
+    }
     eluvian::Emit(tools::kLocked, tools::LockedJson(locked == Locked::Locked, by));
     return locked;
 }

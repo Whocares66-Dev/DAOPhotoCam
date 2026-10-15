@@ -20,3 +20,18 @@ Take pictures with `screenshot {"source": "game"}`: `window` came out black with
 - The options screen's Controls tab (`images/controls-photo-camera-2026-10-15.jpg`): a "Photo Camera" heading at the end of the list, "Photo camera on/off" F8 and "Lock photo camera" F7.
 
 Not yet seen: the keys pressed (the same code as the tools), and everything the free view does.
+
+## 2026-10-15: the free view, DAOLib #125's branch
+
+DAOLib `gh-125-free-view` `9e3b599` on master `06660d3`, debug, the same save. Driven by the tools, and F8, W and D sent as real keys to the game's window in front.
+
+- F8 starts photo cam: the game's mode becomes `flycam`, the HUD goes, and the picture does not move: the start view is the close camera's, eye (52.30, 144.35, -12.36), looking along +x 5 degrees down (the camera tool's yaw 180, pitch 85; the fly camera's yaw -90, pitch -5).
+- The fly camera's yaw is a quarter turn behind the heading: yaw 0 drew a view along +y, -45 one between +x and +y. Its pitch is up positive: 30 drew the sky. `GameView` converts.
+- At first F8 started and stopped photo cam in one frame: the key's callback runs before the frame's, and the game changes its mode a frame later. The free view now has ten frames to become the mode.
+- W held a second at 4 m/s: the eye moved 4.0 m along the view, down with its pitch. D held half a second: 2.07 m toward -y, the view's right. Poses held still across screenshots: the game does not move the camera itself.
+- Off (the tool, the key): explore mode again a frame later, the camera exactly where it was, the HUD back.
+- From combat (a wolf spawned hostile): photo cam starts, the fight goes on, off returns to combat. During the fight a script of the game's changed the mode (`gamemode_change`), flycam to explore to combat, and photo cam stopped by itself ("by mode"), the camera given back.
+- While on, Eluvian's `screen` and the pick follow the drawn view: Lyna's feet at (797, 545), where she stands in the picture. Nothing near the eye hides or fades; at 0.15 m from Lyna's head nothing is clipped.
+- `dao::camera::Axes()` is wrong on this branch (its forward always has x 0); told lib-agent. Photo cam does not use it; `LogAxes` logs it beside the pose at a start and a lock.
+
+Not yet seen: the mouse look and the wheel (the right button sent by `SendInput` went to the window under the real cursor, not the game's), Shift with the wheel, F7, the auto-stop on a menu or a conversation.
