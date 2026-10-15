@@ -1,14 +1,16 @@
 name: Documentation
 
-# The player's guide (docs/): built on every push to master that touches it, and published to
-# GitHub Pages. A pull request builds it without publishing. As DAOTurnBased's, without its
-# version selector: photo cam has no release yet.
+# The player's guide (docs/): built on every push to master that touches it and on every release
+# tag, and published to GitHub Pages: what is on master at the site's root, each release beside it
+# (tools/build_docs.py). A pull request builds it without publishing. As DAOTurnBased's.
 on:
   push:
     branches: [master]
-    paths: ['docs/**', '.github/workflows/docs.yml']
+    paths: ['docs/**', 'tools/build_docs.py', '.github/workflows/docs.yml']
+    # A release tag adds its version to the selector.
+    tags: ['v*']
   pull_request:
-    paths: ['docs/**', '.github/workflows/docs.yml']
+    paths: ['docs/**', 'tools/build_docs.py', '.github/workflows/docs.yml']
   workflow_dispatch:
 
 permissions:
@@ -23,22 +25,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
+        with:
+          # Every tag, for each release's guide; a tag's push builds the whole site from master.
+          fetch-depth: 0
+          ref: ${{ startsWith(github.ref, 'refs/tags/') && 'master' || github.ref }}
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.2'
           bundler-cache: true
           working-directory: docs
-      - name: Build
-        working-directory: docs
-        run: bundle exec jekyll build
-        env:
-          JEKYLL_ENV: production
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: mkdir -p build && python tools/build_docs.py
       - uses: actions/upload-pages-artifact@v4
         with:
-          path: docs/_site
+          path: build/docs-site/DAOPhotoCam
 
   deploy:
-    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master'
+    if: github.event_name != 'pull_request' && (github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/'))
     needs: build
     runs-on: ubuntu-latest
     permissions:

@@ -1,6 +1,6 @@
 # The guide
 
-The player's guide, a Jekyll site in `/docs` beside the source, as the other DAO repositories' are (Just the Docs v0.12.0). It is published to GitHub Pages by `.github/workflows/docs.yml` on every push to master that touches it. Developer notes are in `/dev`.
+The player's guide, a Jekyll site in `/docs` beside the source, as the other DAO repositories' are (Just the Docs v0.12.0). It is published to GitHub Pages by `.github/workflows/docs.yml` on every push to master that touches it and on every release tag (`tools/build_docs.py`). Developer notes are in `/dev`.
 
 ## Preview
 
@@ -10,7 +10,7 @@ bundle install
 bundle exec jekyll serve
 ```
 
-Then open `http://127.0.0.1:4000/DAOPhotoCam/`.
+Then open `http://127.0.0.1:4000/DAOPhotoCam/`. That is one version, and the header's selector reads "Current". Every version, as the site is published: `python tools/build_docs.py --serve` from the repository's root, which builds the working tree at the site's root and each release tag `vX.Y.Z` that has a `docs` folder under `/X.Y.Z/`.
 
 ## Looks
 
