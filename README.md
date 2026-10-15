@@ -2,7 +2,7 @@
 
 A free camera for screenshots in Dragon Age: Origins, a [DAOLib](https://github.com/Whocares66-Dev/DAOLib) plugin.
 
-**Not yet playable:** it waits on DAOLib's free view, field of view and input (DAOLib #125, #126, #127).
+**Not yet playable:** it waits on DAOLib's free view (DAOLib #125).
 
 ## Controls
 

@@ -48,8 +48,8 @@ void ToggleTool(void * /*context*/, const char *args, EluvianReply *reply)
     const auto toggled = plugin::Toggle("tool");
     if (!toggled)
     {
-        reply->error(reply, "This build of photo cam cannot draw a free view yet: it waits on DAOLib's free view, "
-                            "field of view and input (DAOLib #125, #126, #127).");
+        reply->error(reply, "This build of photo cam cannot draw a free view yet: it waits on DAOLib's free view "
+                            "(DAOLib #125).");
         return;
     }
     if (const std::string refusal = tools::Refusal(*toggled); !refusal.empty())

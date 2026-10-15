@@ -87,8 +87,7 @@ std::optional<Toggled> Toggle(std::string_view by)
 {
     if (!g_session.Active() && !game::Available())
     {
-        spdlog::warn("photo cam: not started by the {}, this DAOLib has no free view yet (DAOLib #125, #126, #127)",
-                     by);
+        spdlog::warn("photo cam: not started by the {}, this DAOLib has no free view yet (DAOLib #125)", by);
         return std::nullopt;
     }
     const bool wasActive = g_session.Active();

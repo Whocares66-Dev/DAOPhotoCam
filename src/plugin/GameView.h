@@ -3,8 +3,8 @@
 // Everything the plugin does to the game goes through here; src/core/ decides what.
 //
 // The free view, the field of view and the input are DAOLib's to give (DAOLib #125, #126, #127,
-// asked 2026-10-15). Until the submodule has them, Available() says no and photo cam does not
-// start.
+// asked 2026-10-15). The field of view and the input are on DAOLib's master; until the free view
+// is, Available() says no and photo cam does not start.
 #pragma once
 
 #include "core/FlyCamera.h"

@@ -23,7 +23,7 @@ The JSON is `src/core/Tools`, tested; `src/plugin/Eluvian.cpp` looks for Eluvian
 
 ## Status
 
-The flight, the on/off rules, the field of view (DAOLib #126) and the input (#127) are built; the free view the scene is drawn from waits on DAOLib #125. Asked of lib-agent 2026-10-15: #125 (a free view), #126 (the field of view, `dao::camera::FieldOfView`, `SetFieldOfView`), #127 (`dao::input::Down`, `MouseDelta`, `WheelNotches`, `Withhold`). `extern/DAOLib` is built at a local merge of #126's and #127's branches, not yet committed: commit the submodule only at a commit on DAOLib's master. Until #125 lands `game::Available()` is false and the toggle logs that and does nothing.
+The flight, the on/off rules, the field of view (DAOLib #126) and the input (#127) are built; the free view the scene is drawn from waits on DAOLib #125. Asked of lib-agent 2026-10-15: #125 (a free view), #126 (the field of view, `dao::camera::FieldOfView`, `SetFieldOfView`), #127 (`dao::input::Down`, `MouseDelta`, `WheelNotches`, `Withhold`). #126 and #127 are on DAOLib's master (`2a2fb95`, `06660d3`, seen in play by lib-agent on Steam's build) and `extern/DAOLib` is at it; commit the submodule only at a commit on DAOLib's master. Until #125 lands `game::Available()` is false and the toggle logs that and does nothing.
 
 ## DAOLib
 
