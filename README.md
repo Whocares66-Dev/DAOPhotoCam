@@ -2,7 +2,7 @@
 
 A free camera for screenshots in Dragon Age: Origins, a [DAOLib](https://github.com/Whocares66-Dev/DAOLib) plugin.
 
-**Not yet released:** it needs DAOLib's free view (DAOLib #125), not yet on DAOLib's master.
+**Not yet released.** It needs a DAOLib with the free view (DAOLib #125).
 
 While the photo camera is on the world is paused, in a fight too, so nothing changes in the shot. Off, the game carries on as it was.
 
