@@ -208,10 +208,7 @@ void Frame()
         return;
     }
     // The interface is up from the main menu's first frame; until then AddScreen says no.
-    // Played on while the game is paused, as photo cam keeps it: the game pauses every new movie
-    // of its own accord (GFx's pause), so the panel's frames, its tick and its glows stood still
-    // (DAOLib #134).
-    g_added = dao::gui::AddScreen(kScreen, kMovie, dao::gui::kLayerHud, dao::gui::kScreenAdvancesWhilePaused);
+    g_added = dao::gui::AddScreen(kScreen, kMovie, dao::gui::kLayerHud);
     if (g_added)
     {
         spdlog::info("photo cam: the panel's screen is added; its movie {}",

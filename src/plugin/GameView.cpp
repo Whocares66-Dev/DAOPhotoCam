@@ -2,9 +2,11 @@
 
 #include "dao/Camera.h"
 #include "dao/ClientExoApp.h"
+#include "dao/Gui.h"
 #include "dao/Input.h"
 #include "dao/generated/ScriptApi.h"
 
+#include <algorithm>
 #include <cmath>
 #include <cstdint>
 #include <numbers>
@@ -70,12 +72,23 @@ bool Available()
     return true;
 }
 
+// Whether a loading screen is still up, its fade among them (flag 0x10, dao/Gui.h's Screen). Started
+// as a load's fade was ending, photo cam's pause held the fade over the view until it was off (seen
+// 2026-10-15), so it does not start then.
+static bool Loading()
+{
+    constexpr std::uint32_t kLoadingScreen = 0x10;
+    const auto shown = dao::gui::ShownScreens();
+    return std::ranges::any_of(shown,
+                               [](const dao::gui::Screen &screen) { return (screen.flags & kLoadingScreen) != 0; });
+}
+
 GameCamera Camera()
 {
     GameCamera game;
     dao::CameraController *controller = dao::camera::Current();
     const auto view = dao::camera::CurrentView();
-    if (controller == nullptr || !view)
+    if (controller == nullptr || !view || Loading())
     {
         return game;
     }
