@@ -1,11 +1,8 @@
 #include "plugin/GameView.h"
 
 #include "dao/Camera.h"
-#include "dao/ClientExoApp.h"
-#include "dao/GameModes.h"
 #include "dao/Input.h"
-
-#include <spdlog/spdlog.h>
+#include "dao/generated/ScriptApi.h"
 
 #include <cmath>
 #include <cstdint>
@@ -30,12 +27,6 @@ constexpr std::uint32_t kFlying =
 
 // The field of view last held, so it is set on a change and not every frame.
 std::optional<float> g_heldFov;
-
-// The game changes its mode on a frame after it is asked (seen 2026-10-15: F8's callback ran
-// before the frame's, which still found explore mode), so the free view is given a few frames to
-// become the game's mode before Free() says it has been left.
-constexpr int kFramesToEnter = 10;
-int g_entering = 0;
 
 // The game's fly camera (dao/Camera.h, DAOLib #125) measures its yaw from +y, a quarter turn
 // behind the core's heading from +x: seen in play 2026-10-15, the close view looking along +x
@@ -78,14 +69,9 @@ GameCamera Camera()
 
 bool Draw(const Pose &pose, float fovDegrees)
 {
-    const bool entering = !g_heldFov;
     if (!dao::camera::SetFreeView(ToView(pose)))
     {
         return false;
-    }
-    if (entering)
-    {
-        g_entering = kFramesToEnter;
     }
     if (!g_heldFov || std::abs(*g_heldFov - fovDegrees) > 0.001f)
     {
@@ -95,29 +81,15 @@ bool Draw(const Pose &pose, float fovDegrees)
     return true;
 }
 
-bool Free()
+// As Eluvian finds a thing's position (eluvian-agent, 2026-10-15): the scripts' GetPosition.
+std::optional<Vec3> PositionOf(std::uint32_t id)
 {
-    if (dao::CClientExoApp::CurrentMode() == dao::GameMode::FlyCam)
+    if (dao::script::api::IsObjectValid(id) == 0)
     {
-        g_entering = 0;
-        return true;
+        return std::nullopt;
     }
-    return g_entering-- > 0;
-}
-
-void LogAxes(const Pose &pose)
-{
-    const auto axes = dao::camera::Axes();
-    if (!axes)
-    {
-        return;
-    }
-    const float level = std::cos(pose.pitch);
-    spdlog::info("photo cam: drawn forward ({:.3f}, {:.3f}, {:.3f}), the pose's ({:.3f}, {:.3f}, {:.3f}), eye ({:.2f}, "
-                 "{:.2f}, {:.2f}), heading {:.1f}, pitch {:.1f}",
-                 axes->forward.x, axes->forward.y, axes->forward.z, level * std::cos(pose.heading),
-                 level * std::sin(pose.heading), std::sin(pose.pitch), pose.eye.x, pose.eye.y, pose.eye.z,
-                 pose.heading * (180.0f / kPi), pose.pitch * (180.0f / kPi));
+    const dao::Vector at = dao::script::api::GetPosition(id);
+    return Vec3{at.x, at.y, at.z};
 }
 
 void Release()
@@ -125,7 +97,6 @@ void Release()
     dao::camera::SetFreeView(std::nullopt);
     dao::camera::SetFieldOfView(std::nullopt);
     g_heldFov.reset();
-    g_entering = 0;
 }
 
 FlyInput ReadInput(float seconds)

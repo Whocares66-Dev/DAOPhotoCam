@@ -10,6 +10,9 @@
 #include "core/FlyCamera.h"
 #include "core/Session.h"
 
+#include <cstdint>
+#include <optional>
+
 namespace photocam::game
 {
 
@@ -22,14 +25,13 @@ GameCamera Camera();
 
 // Draws the scene from a pose with a field of view, until Release. Call every frame on the
 // game thread while photo cam is on; the first call enters the free view.
-// @return false, with nothing changed, if the game would not enter it (not exploring or fighting)
+// @return false, with nothing changed, if the game would not enter it (not exploring or fighting),
+//  or has left it on its own (a menu, a conversation, a script): then it has ended
 bool Draw(const Pose &pose, float fovDegrees);
 
-// Whether the free view is still the game's mode: a menu, a conversation or a load leaves it.
-bool Free();
-
-// Logs the drawn view's forward axis beside the pose's, to check the conversions in play.
-void LogAxes(const Pose &pose);
+// Where a creature or object is: its position, at its feet, as the scripts' GetPosition has it.
+// @return nullopt if the id names nothing in the game
+std::optional<Vec3> PositionOf(std::uint32_t id);
 
 // Gives the game back its own camera and field of view, as they were before Draw.
 void Release();

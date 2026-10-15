@@ -15,6 +15,7 @@
 #include "plugin/GameView.h"
 
 #include "dao/Frame.h"
+#include "dao/GameModes.h"
 #include "dao/Input.h"
 #include "dao/Log.h"
 #include "dao/Plugin.h"
@@ -52,15 +53,6 @@ void Frame()
     {
         return;
     }
-    // A menu, a conversation, a cutscene or a load leaves the free view's mode: photo cam ends,
-    // and the game has its own camera back when it returns.
-    if (!game::Free())
-    {
-        spdlog::info("photo cam: stopped, the game has left the close view's modes");
-        g_session.End();
-        GiveBack("mode");
-        return;
-    }
     const auto now = std::chrono::steady_clock::now();
     const float seconds = std::chrono::duration<float>(now - g_lastFrame).count();
     g_lastFrame = now;
@@ -68,7 +60,7 @@ void Frame()
     {
         fly->Step(game::ReadInput(seconds));
     }
-    game::Draw(fly->Current(), fly->FovDegrees());
+    DrawNow();
 }
 
 } // namespace
@@ -81,6 +73,23 @@ const Session &State()
 FlyCamera *Flight()
 {
     return g_session.Fly();
+}
+
+void DrawNow()
+{
+    const FlyCamera *fly = g_session.Fly();
+    if (fly == nullptr)
+    {
+        return;
+    }
+    // A menu, a conversation, a cutscene, a load or a script of the game's leaves the free view's
+    // mode: DAOLib ends the free view, the game keeps the mode it chose, and photo cam ends.
+    if (!game::Draw(fly->Current(), fly->FovDegrees()))
+    {
+        spdlog::info("photo cam: stopped, the game has left the free view");
+        g_session.End();
+        GiveBack("mode");
+    }
 }
 
 std::optional<Toggled> Toggle(std::string_view by)
@@ -103,7 +112,6 @@ std::optional<Toggled> Toggle(std::string_view by)
     {
         g_lastFrame = std::chrono::steady_clock::now();
         game::Withhold(true);
-        game::LogAxes(g_session.Fly()->Current());
         eluvian::Emit(tools::kStarted, tools::StartedJson(*g_session.Fly(), by));
     }
     else if (toggled == Toggled::Stopped)
@@ -123,10 +131,6 @@ Locked Lock(std::string_view by)
     }
     // Locked, the view takes no input, so the game has its own back.
     game::Withhold(locked == Locked::Unlocked);
-    if (locked == Locked::Locked)
-    {
-        game::LogAxes(g_session.Fly()->Current());
-    }
     eluvian::Emit(tools::kLocked, tools::LockedJson(locked == Locked::Locked, by));
     return locked;
 }
@@ -143,12 +147,16 @@ extern "C" __declspec(dllexport) bool __cdecl DAOLib_Load(const dao::LoaderInfo 
         return false;
     }
     // Both keys under a heading of their own in the controls screen, where the player rebinds
-    // them; F7 and F8 are bound to nothing of the game's.
+    // them; F7 and F8 are bound to nothing of the game's. While photo cam is on the game is in its
+    // fly camera mode, where an action's key works only if the action names the mode (dao/Input.h;
+    // seen 2026-10-15: F7 did nothing there): the toggle works in it and where photo cam starts,
+    // the lock only in it.
     const bool registered = dao::input::RegisterAction(
                                 {
                                     .name = std::wstring(kToggleAction),
                                     .label = L"Photo camera on/off",
                                     .key = dao::input::Key::F8,
+                                    .modes = {dao::GameMode::Explore, dao::GameMode::Combat, dao::GameMode::FlyCam},
                                     .section = L"Photo Camera",
                                 },
                                 [] { Toggle("key"); }) &&
@@ -157,6 +165,7 @@ extern "C" __declspec(dllexport) bool __cdecl DAOLib_Load(const dao::LoaderInfo 
                                     .name = std::wstring(kLockAction),
                                     .label = L"Lock photo camera",
                                     .key = dao::input::Key::F7,
+                                    .modes = {dao::GameMode::FlyCam},
                                     .section = L"Photo Camera",
                                 },
                                 [] { Lock("key"); });

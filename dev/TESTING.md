@@ -35,3 +35,15 @@ DAOLib `gh-125-free-view` `9e3b599` on master `06660d3`, debug, the same save. D
 - `dao::camera::Axes()` is wrong on this branch (its forward always has x 0); told lib-agent. Photo cam does not use it; `LogAxes` logs it beside the pose at a start and a lock.
 
 Not yet seen: the mouse look and the wheel (the right button sent by `SendInput` went to the window under the real cursor, not the game's), Shift with the wheel, F7, the auto-stop on a menu or a conversation.
+
+## 2026-10-15: #125 at db4588f, the keys and mouse, the new tools, combat
+
+DAOLib `gh-125-free-view` `db4588f`, debug, the same save. While the user was away, the game's window was put in front and the cursor over it, and keys and the mouse were sent as real input.
+
+- F8 starts and (from the fly camera mode, once the toggle's action named that mode) stops photo cam. F7 locks there. Before the actions named the mode, F7 did nothing while photo cam was on: an action's key works only in the modes it names.
+- The right button held with the mouse 400 counts right turned the view 54 degrees clockwise (facing -90 to -35.6). Two wheel notches up: speed 4 to 6.25. Shift with two notches up: field of view 60 to 50. The game's own zoom and orbit did not move.
+- Locked, the view held while W was down, but W did not walk Lyna and a left click on the ground did not move her: in the fly camera mode the party takes no orders. Asked of lib-agent.
+- The facing is the game's: the start view along +x read facing -90, Lyna's own facing, as she faces +x.
+- `photocam_pose {lookAt: "0x10d", distance: 3, facingDegrees: 90, pitchDegrees: -10}` put the eye 3 m on Tamlen's +x side; `screen` put him at x 800 of 1600, his chest about the middle. `photocam_move {forward: 1, right: 1, up: 0.5}` moved the eye exactly so (along -x 10 degrees down, toward +y, up).
+- Off a frame after on (two tool calls): explore again the frame after. `SetGameMode(GM_EXPLORE)` by Eluvian's script tool while on: photo cam stopped by "mode", the game stayed in explore, the camera given back.
+- Combat: started during a fight with three wolves, photo cam held to the fight's end, the party fighting on; off went fly camera, combat, explore. But a wolf spawned hostile while photo cam was on stood idle for 15 s and the fight began only when photo cam was off: a fight does not start in the fly camera mode. Asked of lib-agent.

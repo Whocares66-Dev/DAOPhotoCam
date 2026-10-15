@@ -2,7 +2,7 @@
 
 A free camera for screenshots in Dragon Age: Origins, a [DAOLib](https://github.com/Whocares66-Dev/DAOLib) plugin.
 
-**Not yet playable:** it waits on DAOLib's free view (DAOLib #125).
+**Not yet released:** it needs DAOLib's free view (DAOLib #125), not yet on DAOLib's master. In a fight already under way it works; a fight does not start while it is on, and while locked the party does not take orders yet.
 
 ## Controls
 
@@ -20,7 +20,7 @@ F7 and F8 are rebound in the options screen's Controls tab, under "Photo Camera"
 
 ## For agents
 
-With [Eluvian](https://github.com/Whocares66-Dev/DAOEluvianMCP) installed, photo cam adds the tools `photocam_state`, `photocam_toggle`, `photocam_lock` and `photocam_pose` (the view placed exactly: `eye`, `headingDegrees`, `pitchDegrees`, `fovDegrees`, `speed`), and the events `photocam.started`, `photocam.stopped` and `photocam.locked`. Without Eluvian it works the same, with no tools.
+With [Eluvian](https://github.com/Whocares66-Dev/DAOEluvianMCP) installed, photo cam adds the tools `photocam_state`, `photocam_toggle`, `photocam_lock`, `photocam_pose` (the view placed exactly: `eye`, `facingDegrees` as the game measures a creature's facing, `pitchDegrees`, `fovDegrees`, `speed`, or aimed at a point or creature with `lookAt` and `distance`) and `photocam_move` (a step along the view), and the events `photocam.started`, `photocam.stopped` and `photocam.locked`. Without Eluvian it works the same, with no tools.
 
 ## Installing
 
