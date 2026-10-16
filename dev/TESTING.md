@@ -88,3 +88,7 @@ Branch `photocam-capture` on DAOLib master `79422e5`.
 ## 2026-10-15: DAOLib 0.3.0
 
 `extern/DAOLib` at its tag `v0.3.0` (`3258005`). The gate green (debug with tests, format and lint; debug-asan and debug-analyze with tests; release with tests). In the game: `photocam_toggle` on, `photocam_move {forward: 2, up: 1}` moved the eye 2 m along +x and 0.83 m up (the pitch's -5 degrees taken), the window's capture the view past the party with the panel, and off.
+
+## 2026-10-15: 0.1.0's release build
+
+The release preset's dll on DAOLib 0.3.0, in the game: on, `photocam_pose {fovDegrees: 40, speed: 10}`, the view narrowed and the panel at 40° and 10 m/s; a capture taken the moment the pose answers shows the panel a frame behind (it is pushed each frame), the view itself current. Off. `tools/package.ps1` made `DAOPhotoCam-0.1.0.zip`: the dll, its PDB, both movies, README, LICENSE, VERSION.txt ("Built on DAOLib 0.3.0, plugin API 2").

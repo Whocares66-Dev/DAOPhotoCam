@@ -1,15 +1,14 @@
 # Changelog
 
-## Unreleased
+## 0.1.0
 
-- Requires DAOLib 0.3.0, which has everything below that names a DAOLib change.
-- The photo camera's keys, on and off (F8), lock (F7) and flying (W, A, S, D, and Q and E up and down), under "Photo Cam" in the controls screen; flying shares its keys with the game's walking (DAOLib #130).
-- Its flight: look with the right mouse button, W A S D, the wheel for speed and Shift with the wheel for the field of view (15 to 120 degrees, top to bottom), each within its limits; tested without the game.
-- Eluvian's tools when it is installed: `photocam_state`, `photocam_toggle`, `photocam_lock`, `photocam_pose` (with `lookAt`, `distance` and `height`), `photocam_move`, and the events `photocam.started`, `photocam.stopped`, `photocam.locked`. Angles are the game's facing and a pitch level at 0.
-- The free view, the field of view and the keys and mouse through DAOLib #125, #126 and #127.
-- The world paused while photo cam is on, and the game's interface hidden.
-- A panel in the bottom right of the game's own options controls: lock, field of view, speed, Capture (the game's screenshot), Exit, and a square to make it small. Kept out of screenshots (DAOLib #133).
-- A gold camera in the top bar, before Options, with its tooltip, to turn photo cam on.
-- Esc ends photo cam; the pointer is hidden while the right button looks (DAOLib #132); the inventory's sounds as it opens and closes.
-- Each start at 4 m/s and the game's field of view; the field of view 15 to 120 degrees.
-- Not started while a loading screen is up.
+The first release. Requires [DAOLib](https://www.nexusmods.com/dragonage/mods/7052) 0.3.0.
+
+- A free camera for screenshots: on and off with F8 or the camera button in the top bar, from the close view in exploring or a fight.
+- Look with the right mouse button held; fly with W, A, S, D, and Q and E straight up and down. The wheel sets the speed (0.5 to 40 m/s), Shift with the wheel the field of view (15 to 120 degrees). F7 locks the view; Esc ends it.
+- The world is paused while it is on, in a fight too, and the game's interface hidden. Off, the camera goes back to the party.
+- A panel in the game's own style: Lock camera, Field of view, Move speed, Capture (the game's screenshot) and Exit, and a square to make it small. It is never in a screenshot.
+- Every key but the mouse and the wheel rebound in Options, Controls, under "Photo Cam".
+- With [Eluvian](https://github.com/Whocares66-Dev/DAOEluvianMCP) installed, the tools `photocam_state`, `photocam_toggle`, `photocam_lock`, `photocam_pose` and `photocam_move`, and the events `photocam.started`, `photocam.stopped` and `photocam.locked`.
+
+Built on DAOLib's free view (#125), field of view (#126), input (#127), key maps (#130), held cursor (#132) and screenshot hook (#133).
