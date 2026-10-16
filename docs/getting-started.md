@@ -5,13 +5,11 @@ nav_order: 1
 
 # Getting started
 
-{: .note }
-Photo Cam is not released yet. It needs [DAOLib](https://www.nexusmods.com/dragonage/mods/7052) 0.3.0 or later.
-
 ## Install
 
-1. Install [DAOLib](https://www.nexusmods.com/dragonage/mods/7052).
-2. Extract Photo Cam's zip into the game's folder, so that this is there:
+1. Install [DAOLib](https://www.nexusmods.com/dragonage/mods/7052) 0.3.0 or later.
+2. Download `DAOPhotoCam-<version>.zip` from the [releases](https://github.com/Whocares66-Dev/DAOPhotoCam/releases).
+3. Extract it into the game's folder, so that this is there:
 
    ```
    bin_ship\daolib\plugins\photocam\photocam.dll
@@ -19,7 +17,7 @@ Photo Cam is not released yet. It needs [DAOLib](https://www.nexusmods.com/drago
    bin_ship\daolib\plugins\photocam\photocam_navbar.swf
    ```
 
-3. Start the game and load a save.
+4. Start the game and load a save.
 
 ## First shot
 

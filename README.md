@@ -2,11 +2,11 @@
 
 A free camera for screenshots in Dragon Age: Origins, a [DAOLib](https://github.com/Whocares66-Dev/DAOLib) plugin.
 
-**Not yet released.** It needs [DAOLib](https://www.nexusmods.com/dragonage/mods/7052) 0.3.0 or later.
+Download it from the [releases](https://github.com/Whocares66-Dev/DAOPhotoCam/releases); the guide is at <https://whocares66-dev.github.io/DAOPhotoCam/>. It needs [DAOLib](https://www.nexusmods.com/dragonage/mods/7052) 0.3.0 or later.
 
 While the photo camera is on the world is paused, in a fight too, so nothing changes in the shot, and the game's interface is hidden. Off, the game carries on as it was.
 
-A gold camera in the game's top bar, before Options, turns it on. In the screen's bottom right a panel, made of the game's own options controls, has the lock, the field of view and the speed, Capture (the game's screenshot) and Exit; its square at the top right makes it small. The panel is never in a screenshot. Each start begins at 4 m/s and the game's field of view.
+A camera button in the game's top bar, before Options, turns it on. In the screen's bottom right a panel, made of the game's own options controls, has the lock, the field of view and the speed, Capture (the game's screenshot) and Exit; its square at the top right makes it small. The panel is never in a screenshot. Each start begins at 4 m/s and the game's field of view.
 
 ## Controls
 
@@ -30,7 +30,9 @@ With [Eluvian](https://github.com/Whocares66-Dev/DAOEluvianMCP) installed, photo
 
 ## Installing
 
-Install DAOLib first. Then extract the plugin's zip into the game's folder, so that `bin_ship\daolib\plugins\photocam\photocam.dll` is there.
+Install DAOLib 0.3.0 or later first. Then extract the release's zip, `DAOPhotoCam-<version>.zip`, into the game's folder, so that `bin_ship\daolib\plugins\photocam\photocam.dll` is there.
+
+To release: `.	oolselease.ps1` (`dev/RELEASING.md`).
 
 ## Building
 
