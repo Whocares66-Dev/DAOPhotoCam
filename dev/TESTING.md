@@ -84,3 +84,7 @@ Branch `photocam-capture` on DAOLib master `79422e5`.
 - Capture and Exit as the Esc menu's buttons, a third taller, their labels whole at 15 pixels; "Photo Cam" centred as the panel's title, the controls screen's heading and the top bar's tooltip.
 - The user's click on Capture: `photocam.log` "a screenshot taken from the panel" at 12:51:16, and `Screenshots\User\Screenshot20261015125116677.jpg`, 1600 x 1000, with neither the panel nor the HUD.
 - Show interface and H taken out (the user): the portraits and the minimap, fed only in explore, came back dim and black.
+
+## 2026-10-15: DAOLib 0.3.0
+
+`extern/DAOLib` at its tag `v0.3.0` (`3258005`). The gate green (debug with tests, format and lint; debug-asan and debug-analyze with tests; release with tests). In the game: `photocam_toggle` on, `photocam_move {forward: 2, up: 1}` moved the eye 2 m along +x and 0.83 m up (the pitch's -5 degrees taken), the window's capture the view past the party with the panel, and off.

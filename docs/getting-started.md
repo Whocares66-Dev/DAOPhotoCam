@@ -6,7 +6,7 @@ nav_order: 1
 # Getting started
 
 {: .note }
-Photo Cam is not released yet. It needs a [DAOLib](https://www.nexusmods.com/dragonage/mods/7052) newer than 0.2.0, with the free view, the held cursor and the screenshot hook.
+Photo Cam is not released yet. It needs [DAOLib](https://www.nexusmods.com/dragonage/mods/7052) 0.3.0 or later.
 
 ## Install
 
