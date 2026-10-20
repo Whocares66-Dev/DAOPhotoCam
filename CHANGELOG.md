@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Leaving photo cam gives the camera its near plane back: the game's fly camera left it at 0.25 m, where exploring has 0.15 m, so things close to the camera were cut off sooner after each use, whatever ended it (DAOLib #205).
+
 ## 0.1.0
 
 The first release. Requires [DAOLib](https://www.nexusmods.com/dragonage/mods/7052) 0.3.0.

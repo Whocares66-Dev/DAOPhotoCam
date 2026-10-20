@@ -92,3 +92,7 @@ Branch `photocam-capture` on DAOLib master `79422e5`.
 ## 2026-10-15: 0.1.0's release build
 
 The release preset's dll on DAOLib 0.3.0, in the game: on, `photocam_pose {fovDegrees: 40, speed: 10}`, the view narrowed and the panel at 40° and 10 m/s; a capture taken the moment the pose answers shows the panel a frame behind (it is pushed each frame), the view itself current. Off. `tools/package.ps1` made `DAOPhotoCam-0.1.0.zip`: the dll, its PDB, both movies, README, LICENSE, VERSION.txt ("Built on DAOLib 0.3.0, plugin API 2").
+
+## 2026-10-19: the near plane given back (#1, DAOLib #205)
+
+Eluvian's `camera` read answers the projection a frame is drawn with (Eluvian #156, DAOLib #204). On DAOLib 0.3.0 it showed the near plane 0.15 in exploring, 0.01 while photo cam flies, and 0.25 after it, which the game's fly camera mode's exit writes (lib-agent's reading of the exe). Built against #205 (`e819a47`, the same code as master's `a5157cb`), in Eluvian's instance eluvian-test, windowed 1600 by 1000, Lyna's manual 4, by MCP alone: exploring 0.15; `photocam_toggle` on 0.01; off 0.15; on again 0.01; a script's SetGameMode(1) mid-flight (photo cam then off) 0.15, in combat; SetGameMode(0) 0.15. Far 4000 and the field of view 60 throughout.
